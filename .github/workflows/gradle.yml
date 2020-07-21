@@ -19,6 +19,6 @@ jobs:
       with:
         java-version: 13
     - name: permit build
-      run: chmod +x ./gradlew
+      run: chmod +x ./WebDS/gradlew
     - name: execute build
-      run: ./gradlew build
+      run: ./WebDS/gradlew build
