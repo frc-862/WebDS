@@ -8,10 +8,20 @@
 
     <div class="container">
         <div class="py-5 text-center">
-            <h1>Lightning Robotics Remote Operators Console</h1>
-            <img src="/src/main/resources/img/lightning.png" alt="Lightning Robotics">
+            <h2>Lightning Robotics Remote Operators Console</h2>
+            <p class="lead">Please submit the form below to enter the waiting room.</p>
+            <input type="text" id="name" class="form-control" placeholder="Name">
+            <input type="text" id="email" class="form-control" placeholder="Email">
+            <div class="input-group-append"><button id="send" class="btn btn-primary" onclick="submit()">Submit</button></div>
         </div>
     </div>
+
+    <script>
+        function submit() {
+            var userURL = ('/wait/' + $("#name").val() + '/' + $("#email").val());
+            window.location.href=userURL;
+        }
+    </script>
 
 </body>
 <footer th:insert="fragments/common.html :: footer"></footer>
