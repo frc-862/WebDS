@@ -241,3 +241,6 @@ gradle-app.setting
 **/build/
 
 # End of https://www.toptal.com/developers/gitignore/api/qt,qtcreator,java,java-web,c++,linux,macos,windows,gradle,visualstudiocode
+
+**/bin/
+**/.settings/
