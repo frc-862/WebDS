@@ -15,7 +15,7 @@ public class SocketHandler extends TextWebSocketHandler {
  
     private static final Logger LOGGER = LoggerFactory.getLogger(SocketHandler.class);
     
-    private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+    private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>(); // TODO - make this the wait room!!!
  
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -32,12 +32,21 @@ public class SocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         super.handleTextMessage(session, message);
-        sessions.forEach(webSocketSession -> {
-            try {
-                webSocketSession.sendMessage(message);
-            } catch (IOException e) {
-                LOGGER.error("Error occurred.", e);
-            }
-        });
+        String msg = message.getPayload();
+        if(!msg.equals("NEXT")) {
+            sessions.forEach(webSocketSession -> {
+                try {
+                    webSocketSession.sendMessage(message);
+                } catch (IOException e) {
+                    LOGGER.error("Error occurred.", e);
+                }
+            });
+        } else {
+            WebSocketSession next = sessions.remove(0);
+            next.sendMessage(new TextMessage("URNEXT"));
+            next.close();
+        }
+        
     }
+    
 }

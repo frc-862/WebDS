@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <link rel="icon" type="image/png" href="images/icon.png" />
+    <head>
+        <title>Lightning Robotics</title>
+        <th:block th:include="fragments/common.html :: headerfiles"></th:block>
+    </head>
+    <body>
+        
+        <div class="container">
+            <div class="py-5 text-center">
+                <img
+                    alt="Lightning Robotics"
+                    src="/images/lightning.png"
+                    style="max-width: 60%;"
+                />
+                <h2>Remote Operators Admin Console</h2>                
+                
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    
+                </div>
+                <div class="col-md-6">
+                    <div id="console"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // TODO - connect this to websocket at '/wait' and configure to send "next" signal to socket
+        </script>
+        
+    </body>
+    <footer th:insert="fragments/common.html :: footer"></footer>
+</html>

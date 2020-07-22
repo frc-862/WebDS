@@ -1,21 +1,66 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Lightning Robotics Remote Operators Console</title>
-    <th:block th:include="fragments/common.html :: headerfiles"></th:block>
-</head>
-<body>
-
-    <div class="container">
-        <div class="py-5 text-center">
-            <h2>Lightning Robotics Remote Operators Console</h2>
-            <p class="lead">Please wait for robot to become available.</p>
-            <p class="lead">In the mean time, please review some of these helpful resources:</p>
-            <!--Helpful Resources Here-->
+    <link rel="icon" type="image/png" href="images/icon.png" />
+    <head>
+        <title>Lightning Robotics</title>
+        <th:block th:include="fragments/common.html :: headerfiles"></th:block>
+    </head>
+    <body>
+        <div class="container">
+            <div class="py-5 text-center">
+                <img
+                    alt="Lightning Robotics"
+                    src="/images/lightning.png"
+                    style="max-width: 60%;"
+                />
+                <h2>Remote Operators Console</h2>
+                <p class="lead">Please wait for robot to become available.</p>
+                
+                
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="lead">
+                        In the mean time, please review some of these helpful
+                        resources:
+                    </p>
+                    <!--Helpful Resources Here-->
+                </div>
+                <div class="col-md-6">
+                    <div id="console"></div>
+                </div>
+            </div>
         </div>
-        
-    </div>
+        <script>
 
-</body>
-<footer th:insert="fragments/common.html :: footer"></footer>
+            function connect() {
+                var url =
+                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/wait}]]*/ "ws://localhost:8080/wait";
+                /*]]>*/
+                ws = new WebSocket(url);
+                ws.onopen = function () {
+                    showBroadcastMessage('<div class="alert alert-success">Connected -> Pending Robot Availibility</div>');
+                };
+                ws.onmessage = function (data) {
+                    var msg = data.data;
+                    showBroadcastMessage(createTextNode(msg));
+                    if(msg == 'URNEXT') {
+                        window.location.href='/run';
+                    }
+                };
+            }
+
+            window.onload = connect();
+
+            function showBroadcastMessage(message) {
+                $("#console").html($("#console").html() + message);
+            }
+
+            function createTextNode(msg) {
+                return '<div class="alert alert-info">' + msg + "</div>";
+            }
+
+        </script>
+    </body>
+    <footer th:insert="fragments/common.html :: footer"></footer>
 </html>
