@@ -12,12 +12,12 @@ import lightning.webds.service.WaitingRoomService;
 public class WaitingRoomController {
 
     @Autowired
-    private static WaitingRoomService wrs;
+    private static WaitingRoomService wrs = new WaitingRoomService();
     
     @RequestMapping("/wait/{name}/{email}")
     public String initializeWaitingRoom(@PathVariable("name") String name, @PathVariable("email") String email) {
-        User curr = new User(name, email);
-        wrs.addUser(curr);
+        //User curr = new User(name, email);
+        //wrs.addUser(curr);
         return "wait";
     }
 

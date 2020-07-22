@@ -19,7 +19,13 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    
+                    <button
+                        id="inv"
+                        class="btn btn-primary"
+                        onclick="inviteNext()"
+                    >
+                        Invite Next
+                    </button>
                 </div>
                 <div class="col-md-6">
                     <div id="console"></div>
@@ -29,6 +35,35 @@
 
         <script>
             // TODO - connect this to websocket at '/wait' and configure to send "next" signal to socket
+            var ws;
+            function connect() {
+                var url =
+                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/wait}]]*/ "ws://localhost:8080/wait";
+                /*]]>*/
+                ws = new WebSocket(url);
+                ws.onopen = function () {
+                    showBroadcastMessage('<div class="alert alert-success">Connected</div>');
+                };
+                ws.onmessage = function (data) {
+                    var msg = data.data;
+                    showBroadcastMessage(createTextNode(msg));
+                };
+            }
+
+            window.onload = connect();
+
+            function showBroadcastMessage(message) {
+                $("#console").html($("#console").html() + message);
+            }
+
+            function createTextNode(msg) {
+                return '<div class="alert alert-info">' + msg + "</div>";
+            }
+
+            function inviteNext() {
+                ws.send('NEXT');
+            }
+
         </script>
         
     </body>

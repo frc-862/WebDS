@@ -13,7 +13,7 @@ import lightning.webds.repository.WaitingRoom;
 public class WaitingRoomService {
     
     @Autowired
-    private WaitingRoom wr;
+    private static WaitingRoom wr = new WaitingRoom();
 
     public void addUser(User usr) {
         wr.add(usr);
