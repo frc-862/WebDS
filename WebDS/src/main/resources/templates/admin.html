@@ -19,13 +19,38 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <button
+                    <div class="row mb-3">
+                        <div class="input-group">
+                            Connection:&nbsp;
+                            <div class="btn-group">
+                                <button
+                                    type="button"
+                                    id="connect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="connect()"
+                                >
+                                    Connect
+                                </button>
+                                <button
+                                    type="button"
+                                    id="disconnect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="disconnect()"
+                                >
+                                    Disconnect
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <button
                         id="inv"
                         class="btn btn-primary"
                         onclick="inviteNext()"
-                    >
-                        Invite Next
-                    </button>
+                        >
+                            Invite Next
+                        </button>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <div id="console"></div>
@@ -34,26 +59,37 @@
         </div>
 
         <script>
-            // TODO - connect this to websocket at '/wait' and configure to send "next" signal to socket
+            
             var ws;
             function connect() {
                 var url =
                     /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/wait}]]*/ "ws://localhost:8080/wait";
                 /*]]>*/
                 ws = new WebSocket(url);
+                //ws.send('IAMADMIN'); // why is this killing program
                 ws.onopen = function () {
                     showBroadcastMessage('<div class="alert alert-success">Connected</div>');
+                    ws.send('IAMADMIN');
                 };
+                ws.onclose = function () {
+                    showBroadcastMessage('<div class="alert alert-danger">Disconnected From Server - Please Re-Connect</div>');
+                }
                 ws.onmessage = function (data) {
                     var msg = data.data;
                     showBroadcastMessage(createTextNode(msg));
                 };
             }
-
             window.onload = connect();
 
+            function disconnect() {
+                if (ws != null) {
+                    ws.close();
+                    showBroadcastMessage('<div class="alert alert-warning">Admin User Disconnected</div>');
+                }
+            }
+
             function showBroadcastMessage(message) {
-                $("#console").html($("#console").html() + message);
+                $("#console").html(message + $("#console").html());
             }
 
             function createTextNode(msg) {

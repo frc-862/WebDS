@@ -5,8 +5,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
-import lightning.webds.handler.SocketHandler;
-import lightning.webds.handler.WaitHandler;
+import lightning.webds.handler.WaitingSocketHandler;
  
 @Configuration
 @EnableWebSocket
@@ -16,6 +15,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
         //webSocketHandlerRegistry.addHandler(new SocketHandler(), "/web-socket");
         //webSocketHandlerRegistry.addHandler(new WaitHandler(), "/wait");
-        webSocketHandlerRegistry.addHandler(new SocketHandler(), "/wait");
+        webSocketHandlerRegistry.addHandler(new WaitingSocketHandler(), "/wait");
     }
 }
