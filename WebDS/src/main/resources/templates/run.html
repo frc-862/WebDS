@@ -6,7 +6,6 @@
         <th:block th:include="fragments/common.html :: headerfiles"></th:block>
     </head>
     <body>
-        
         <div class="container">
             <div class="py-5 text-center">
                 <img
@@ -18,9 +17,6 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <h4>Active Keys</h4>
-                </div>
-                <div class="col-md-6">
                     <h4>Input Configuration</h4>
                     <!--
                         Image about Keyboard/joystick input
@@ -29,10 +25,13 @@
                 </div>
                 <div class="col-md-6">
                     <h4>Event Log</h4>
+                    <div id="info"></div>
+                    <!--
+                        Key Display
+                    -->
                     <div id="console"></div>
                 </div>
             </div>
-
         </div>
 
         <script>
@@ -44,15 +43,11 @@
                 ws = new WebSocket(url);
                 ws.onopen = function () {
                     showBroadcastMessage('<div class="alert alert-success">Connected</div>');
-                    ws.send('IAMDRIVER');
+                    ws.send("IAMDRIVER");
                 };
-                // ws.onclose = function () {
-                //     ws.send('ADMINDIED');
-                //     showBroadcastMessage('<div class="alert alert-danger">Disconnected From Queue - Please Re-Connect</div>');
-                // }
                 ws.onmessage = function (data) {
                     var msg = data.data;
-                    if(msg == 'LEAVE') {
+                    if (msg == "LEAVE") {
                         window.location.href = "/thx";
                     }
                     showBroadcastMessage(createTextNode(msg));
@@ -75,8 +70,50 @@
             }
 
             window.onload = connect();
+
+            var Key = {
+                LEFT: 37,
+                UP: 38,
+                RIGHT: 39,
+                DOWN: 40,
+            };
+
+            function _addEventListener(evt, element, fn) {
+                if (window.addEventListener) {
+                    element.addEventListener(evt, fn, false);
+                } else {
+                    element.attachEvent("on" + evt, fn);
+                }
+            }
+
+            function handleKeyboardEvent(evt) {
+                if (!evt) {
+                    evt = window.event;
+                } // for old IE compatible
+                var keycode = evt.keyCode || evt.which; // also for cross-browser compatible
+
+                var info = document.getElementById("info");
+                switch (keycode) {
+                    case Key.LEFT:
+                        info.innerHTML += "&larr; ";
+                        break;
+                    case Key.UP:
+                        info.innerHTML += "&uarr; ";
+                        break;
+                    case Key.RIGHT:
+                        info.innerHTML += "&rarr; ";
+                        break;
+                    case Key.DOWN:
+                        info.innerHTML += "&darr; ";
+                        break;
+                    default:
+                        info.innerHTML += "SOMEKEY ";
+                }
+            }
+
+            _addEventListener("keydown", document, handleKeyboardEvent);
+            
         </script>
-        
     </body>
     <footer th:insert="fragments/common.html :: footer"></footer>
 </html>
