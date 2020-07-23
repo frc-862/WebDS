@@ -51,7 +51,9 @@ public class DriverSocketHandler extends TextWebSocketHandler {
             if(driver == null) {
                 driver = session;
             } else {
-                driver.sendMessage(new TextMessage("LEAVE"));
+                if(driver.isOpen()) {
+                    driver.sendMessage(new TextMessage("LEAVE"));
+                }
                 driver.close();
                 driver = session;
             }

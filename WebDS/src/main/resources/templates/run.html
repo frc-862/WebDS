@@ -22,10 +22,18 @@
                         Image about Keyboard/joystick input
                         flag that details what input is active (keyboard v. joystick)
                     -->
+                    <div class="row mb-3">
+                        <div class="lead">Configured Input Device: </div>
+                        <div id="inpdev" class="alert alert-success">
+                            Keyboard
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-6">
                     <h4>Event Log</h4>
-                    <div id="info"></div>
+                    <div id="info" class="alert alert-success">
+                        Active Keys:
+                    </div>
                     <!--
                         Key Display
                     -->
@@ -34,6 +42,9 @@
             </div>
         </div>
 
+        <!--
+            <script type="text/javascript" src="run.js"></script>
+        -->
         <script>
             var ws;
             function connect() {
@@ -44,6 +55,9 @@
                 ws.onopen = function () {
                     showBroadcastMessage('<div class="alert alert-success">Connected</div>');
                     ws.send("IAMDRIVER");
+                };
+                ws.onclose = function () {
+                    window.location.href = "/error";
                 };
                 ws.onmessage = function (data) {
                     var msg = data.data;
@@ -86,14 +100,24 @@
                 }
             }
 
+            function _removeEventListener(evt, element, fn) {
+                if (window.removeEventListener) {
+                    element.removeEventListener(evt, fn, false);
+                } else {
+                    element.detachEvent("on" + evt, fn);
+                }
+            }
+
             function handleKeyboardEvent(evt) {
                 if (!evt) {
                     evt = window.event;
-                } // for old IE compatible
-                var keycode = evt.keyCode || evt.which; // also for cross-browser compatible
+                }
+                var keycode = evt.keyCode || evt.which;
 
                 var info = document.getElementById("info");
-                switch (keycode) {
+                switch (
+                    keycode // TODO send these
+                ) {
                     case Key.LEFT:
                         info.innerHTML += "&larr; ";
                         break;
@@ -107,12 +131,48 @@
                         info.innerHTML += "&darr; ";
                         break;
                     default:
-                        info.innerHTML += "SOMEKEY ";
+                    info.innerHTML += "SOMEKEY ";
                 }
             }
 
-            _addEventListener("keydown", document, handleKeyboardEvent);
-            
+            _addEventListener("keydown", document, handleKeyboardEvent); // add for keyup?
+
+            var gamepad = false;
+            var interval;
+
+            window.addEventListener("gamepadconnected", function (e) {
+                document.getElementById("inpdev").innerHTML = "Gamepad";
+                _removeEventListener("keydown", document, handleKeyboardEvent);
+                gamepad = true;
+                //interval = setInterval(loop, 500);
+            });
+
+            window.addEventListener("gamepaddisconnected", function () {
+                document.getElementById("inpdev").innerHTML = "Keyboard";
+                _addEventListener("keydown", document, handleKeyboardEvent);
+                gamepad = false;
+                //clearInterval(interval);
+            });
+
+            function buttonPressed(b) {
+                if (typeof b == "object") {
+                    return b.pressed;
+                }
+                return b == 1.0;
+            }
+
+            function loop() {
+                var gamepads = navigator.getGamepads
+                    ? navigator.getGamepads()
+                    : navigator.webkitGetGamepads
+                    ? navigator.webkitGetGamepads
+                    : [];
+                if (!gamepads) return;
+
+                var gp = gamepads[0];
+
+                // TODO - scan axes and send to server
+            }
         </script>
     </body>
     <footer th:insert="fragments/common.html :: footer"></footer>
