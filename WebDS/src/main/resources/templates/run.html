@@ -7,12 +7,74 @@
     </head>
     <body>
         
-        <p>
-            If You Can See This, Then It Worked!
-        </p>
+        <div class="container">
+            <div class="py-5 text-center">
+                <img
+                    alt="Lightning Robotics"
+                    src="/images/lightning.png"
+                    style="max-width: 60%;"
+                />
+                <h2>Remote Operators Console</h2>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Active Keys</h4>
+                </div>
+                <div class="col-md-6">
+                    <h4>Input Configuration</h4>
+                    <!--
+                        Image about Keyboard/joystick input
+                        flag that details what input is active (keyboard v. joystick)
+                    -->
+                </div>
+                <div class="col-md-6">
+                    <h4>Event Log</h4>
+                    <div id="console"></div>
+                </div>
+            </div>
+
+        </div>
 
         <script>
-            
+            var ws;
+            function connect() {
+                var url =
+                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/ds}]]*/ "ws://localhost:8080/ds";
+                /*]]>*/
+                ws = new WebSocket(url);
+                ws.onopen = function () {
+                    showBroadcastMessage('<div class="alert alert-success">Connected</div>');
+                    ws.send('IAMDRIVER');
+                };
+                // ws.onclose = function () {
+                //     ws.send('ADMINDIED');
+                //     showBroadcastMessage('<div class="alert alert-danger">Disconnected From Queue - Please Re-Connect</div>');
+                // }
+                ws.onmessage = function (data) {
+                    var msg = data.data;
+                    if(msg == 'LEAVE') {
+                        window.location.href = "/thx";
+                    }
+                    showBroadcastMessage(createTextNode(msg));
+                };
+            }
+
+            function disconnect() {
+                if (ws != null) {
+                    ws.close();
+                    showBroadcastMessage('<div class="alert alert-warning">Disconnected</div>');
+                }
+            }
+
+            function showBroadcastMessage(message) {
+                $("#console").html(message + $("#console").html());
+            }
+
+            function createTextNode(msg) {
+                return '<div class="alert alert-info">' + msg + "</div>";
+            }
+
+            window.onload = connect();
         </script>
         
     </body>

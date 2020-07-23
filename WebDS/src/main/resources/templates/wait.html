@@ -45,7 +45,9 @@
                     var msg = data.data;
                     showBroadcastMessage(createTextNode(msg));
                     if(msg == 'URNEXT') {
+                        ws.send('USRLEAV');
                         window.location.href='/run';
+                        ws.close();
                     }
                 };
             }

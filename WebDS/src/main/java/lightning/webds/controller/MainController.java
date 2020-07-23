@@ -20,5 +20,10 @@ public class MainController {
     public String getAdminPage() {
         return "admin";
     }
+
+    @RequestMapping("/thx")
+    public String getEndPage() {
+        return "thanks";
+    }
     
 }
