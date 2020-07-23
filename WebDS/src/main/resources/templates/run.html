@@ -4,6 +4,50 @@
     <head>
         <title>Lightning Robotics</title>
         <th:block th:include="fragments/common.html :: headerfiles"></th:block>
+        <style>
+            .axes {
+                padding: 1em;
+            }
+
+            .buttons {
+                min-width: 50px;
+                margin-left: 1em;
+            }
+
+            /*meter*/.axis {
+                min-width: 200px;
+                margin: 1em;
+            }
+
+            .button {
+                display: inline-block;
+                width: 1em;
+                text-align: center;
+                padding: 1em;
+                border-radius: 20px;
+                border: 1px solid black;
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAAxJREFUCNdjYPjPAAACAgEAqiqeJwAAAABJRU5ErkJggg==);
+                background-size: 0% 0%;
+                background-position: 50% 50%;
+                background-repeat: no-repeat;
+            }
+
+            .pressed {
+                border: 1px solid red;
+                background-color: rgb(0, 255, 0);
+            }
+
+            .touched::after {
+                content: "";
+                display: block;
+                position: absolute;
+                margin-top: -0.2em;
+                margin-left: -0.5em;
+                font-size: 0.8em;
+                opacity: 0.7;
+            }
+
+        </style>
     </head>
     <body>
         <div class="container">
@@ -23,29 +67,29 @@
                         flag that details what input is active (keyboard v. joystick)
                     -->
                     <div class="row mb-3">
-                        <div class="lead">Configured Input Device: </div>
+                        <div class="lead">Configured Input Device:</div>
                         <div id="inpdev" class="alert alert-success">
                             Keyboard
                         </div>
                     </div>
+                    <div class="lead">Input: </div>
+                    <div id="info"></div>
                 </div>
                 <div class="col-md-6">
                     <h4>Event Log</h4>
-                    <div id="info" class="alert alert-success">
-                        Active Keys:
-                    </div>
                     <!--
-                        Key Display
+                        <div id="debug"></div>
+                        
                     -->
+                    <div id="dbg"></div>
                     <div id="console"></div>
                 </div>
             </div>
         </div>
 
-        <!--
-            <script type="text/javascript" src="run.js"></script>
-        -->
         <script>
+            var dbg = document.getElementById("dbg");
+
             var ws;
             function connect() {
                 var url =
@@ -53,11 +97,14 @@
                 /*]]>*/
                 ws = new WebSocket(url);
                 ws.onopen = function () {
-                    showBroadcastMessage('<div class="alert alert-success">Connected</div>');
+                    showBroadcastMessage(
+                        '<div class="alert alert-success">Connected</div>'
+                    );
                     ws.send("IAMDRIVER");
                 };
                 ws.onclose = function () {
-                    window.location.href = "/error";
+                    disconnect();
+                    //window.location.href = "/error";
                 };
                 ws.onmessage = function (data) {
                     var msg = data.data;
@@ -71,7 +118,9 @@
             function disconnect() {
                 if (ws != null) {
                     ws.close();
-                    showBroadcastMessage('<div class="alert alert-warning">Disconnected</div>');
+                    showBroadcastMessage(
+                        '<div class="alert alert-warning">Disconnected</div>'
+                    );
                 }
             }
 
@@ -85,11 +134,29 @@
 
             window.onload = connect();
 
+            var kRAF = window.mozRequestAnimationFrame ||
+              window.webkitRequestAnimationFrame ||
+              window.requestAnimationFrame;
+
             var Key = {
                 LEFT: 37,
                 UP: 38,
                 RIGHT: 39,
                 DOWN: 40,
+            };
+
+            var KeyPressed = {
+                LEFT: false,
+                UP: false,
+                RIGHT: false,
+                DOWN: false,
+            };
+
+            var KeyID = {
+                LEFT: 0,
+                UP: 1, 
+                RIGHT: 2,
+                DOWN: 3,
             };
 
             function _addEventListener(evt, element, fn) {
@@ -108,71 +175,227 @@
                 }
             }
 
-            function handleKeyboardEvent(evt) {
-                if (!evt) {
-                    evt = window.event;
-                }
-                var keycode = evt.keyCode || evt.which;
+            function updateKeyboard() {
+                
+                var d = document.getElementById("keyboard");
 
-                var info = document.getElementById("info");
-                switch (
-                    keycode // TODO send these
-                ) {
+                var buttons = d.getElementsByClassName("button");
+                buttons[KeyID.LEFT].className = (KeyPressed.LEFT) ? "button pressed" : "button";
+                buttons[KeyID.UP].className = (KeyPressed.UP) ? "button pressed" : "button";
+                buttons[KeyID.DOWN].className = (KeyPressed.DOWN) ? "button pressed" : "button";
+                buttons[KeyID.RIGHT].className = (KeyPressed.RIGHT) ? "button pressed" : "button";
+
+                
+                
+                kRAF(updateKeyboard);
+            }
+
+            function configKeyboard() {
+                var d = document.createElement("div");
+                d.setAttribute("id", "keyboard");
+                var t = document.createElement("h6");
+                t.appendChild(document.createTextNode("Active Keyboard"));
+                d.appendChild(t);
+                var b = document.createElement("div");
+                b.className = "buttons";
+                for (var i = 0 ; i < 4 ; i++) {
+                    var e = document.createElement("span");
+                    e.className = "button";
+
+                    if(i == KeyID.LEFT) e.innerHTML = "&larr; ";
+                    if(i == KeyID.UP) e.innerHTML = "&uarr; ";
+                    if(i == KeyID.DOWN) e.innerHTML = "&darr; ";
+                    if(i == KeyID.RIGHT) e.innerHTML = "&rarr; ";
+
+                    b.appendChild(e);
+                }
+                d.appendChild(b);
+                document.getElementById("info").appendChild(d);
+
+                kRAF(updateKeyboard); // need animation frame to send on server?
+            }
+
+            function removeKeyboard() {
+                var d = document.getElementById("keyboard");
+                document.getElementById("info").removeChild(d);
+            }
+
+            // _addEventListener("keydown", document, handleKeyboardEvent); // add for keyup?
+            configKeyboard();
+
+            document.onkeydown = function(event) {
+                var d = document.getElementById("debug");
+                switch(event.keyCode) {
                     case Key.LEFT:
-                        info.innerHTML += "&larr; ";
+                        KeyPressed.LEFT = true;
+                        d.innerHTML += "LT ";
                         break;
                     case Key.UP:
-                        info.innerHTML += "&uarr; ";
+                        KeyPressed.UP = true;
+                        d.innerHTML += "UT ";
                         break;
                     case Key.RIGHT:
-                        info.innerHTML += "&rarr; ";
+                        KeyPressed.RIGHT = true;
+                        d.innerHTML += "RT ";
                         break;
                     case Key.DOWN:
-                        info.innerHTML += "&darr; ";
+                        KeyPressed.DOWN = true;
+                        d.innerHTML += "DT ";
                         break;
                     default:
-                    info.innerHTML += "SOMEKEY ";
                 }
             }
 
-            _addEventListener("keydown", document, handleKeyboardEvent); // add for keyup?
+            document.onkeyup = function(event) {
+                var d = document.getElementById("debug");
+                switch(event.keyCode) {
+                    case Key.LEFT:
+                        KeyPressed.LEFT = false;
+                        d.innerHTML += "LF ";
+                        break;
+                    case Key.UP:
+                        KeyPressed.UP = false;
+                        d.innerHTML += "UF ";
+                        break;
+                    case Key.RIGHT:
+                        KeyPressed.RIGHT = false;
+                        d.innerHTML += "RF ";
+                        break;
+                    case Key.DOWN:
+                        KeyPressed.DOWN = false;
+                        d.innerHTML += "DF ";
+                        break;
+                    default:
+                }
+            }
 
             var gamepad = false;
-            var interval;
 
-            window.addEventListener("gamepadconnected", function (e) {
+            var haveEvents = 'GamepadEvent' in window;
+            var haveWebkitEvents = 'WebKitGamepadEvent' in window;
+            var controllers = {};
+            var rAF = window.mozRequestAnimationFrame ||
+              window.webkitRequestAnimationFrame ||
+              window.requestAnimationFrame;
+
+            function connecthandler(e) {
+                addgamepad(e.gamepad);
                 document.getElementById("inpdev").innerHTML = "Gamepad";
-                _removeEventListener("keydown", document, handleKeyboardEvent);
+                // _removeEventListener("keydown", document, handleKeyboardEvent);
+                removeKeyboard();
                 gamepad = true;
-                //interval = setInterval(loop, 500);
-            });
+            }
 
-            window.addEventListener("gamepaddisconnected", function () {
+            function disconnecthandler(e) {
+                removegamepad(e.gamepad);
                 document.getElementById("inpdev").innerHTML = "Keyboard";
-                _addEventListener("keydown", document, handleKeyboardEvent);
+                // _addEventListener("keydown", document, handleKeyboardEvent);
+                configKeyboard();
                 gamepad = false;
-                //clearInterval(interval);
-            });
+            }
 
-            function buttonPressed(b) {
-                if (typeof b == "object") {
-                    return b.pressed;
+            function addgamepad(gamepad) {
+                controllers[gamepad.index] = gamepad; 
+                var d = document.createElement("div");
+                d.setAttribute("id", "controller" + gamepad.index);
+                var t = document.createElement("h6");
+                t.appendChild(document.createTextNode("Active Gamepad: " + gamepad.id));
+                d.appendChild(t);
+                var b = document.createElement("div");
+                b.className = "buttons";
+                for (var i=0; i<gamepad.buttons.length; i++) {
+                    var e = document.createElement("span");
+                    e.className = "button";
+                    //e.id = "b" + i;
+                    e.innerHTML = i;
+                    b.appendChild(e);
                 }
-                return b == 1.0;
+                d.appendChild(b);
+                var a = document.createElement("div");
+                a.className = "axes";
+                for (i=0; i<gamepad.axes.length; i++) {
+                    e = document.createElement("meter");
+                    e.className = "axis";
+                    //e.id = "a" + i;
+                    e.setAttribute("min", "-1");
+                    e.setAttribute("max", "1");
+                    e.setAttribute("value", "0");
+                    e.innerHTML = i;
+                    a.appendChild(e);
+                }
+                d.appendChild(a);
+
+                // document.getElementById("info").style.display = "none"; /////////
+                // document.body.appendChild(d);
+                document.getElementById("info").appendChild(d);
+
+                rAF(updateStatus);
             }
 
-            function loop() {
-                var gamepads = navigator.getGamepads
-                    ? navigator.getGamepads()
-                    : navigator.webkitGetGamepads
-                    ? navigator.webkitGetGamepads
-                    : [];
-                if (!gamepads) return;
-
-                var gp = gamepads[0];
-
-                // TODO - scan axes and send to server
+            function removegamepad(gamepad) {
+                var d = document.getElementById("controller" + gamepad.index);
+                document.getElementById("info").removeChild(d);
+                delete controllers[gamepad.index];
             }
+
+            function updateStatus() {
+                scangamepads();
+                for (j in controllers) {
+                    var controller = controllers[j];
+                    var d = document.getElementById("controller" + j);
+                    var buttons = d.getElementsByClassName("button");
+                    for (var i=0; i<controller.buttons.length; i++) {
+                        var b = buttons[i];
+                        var val = controller.buttons[i];
+                        var pressed = val == 1.0;
+                        var touched = false;
+                        if (typeof(val) == "object") {
+                            pressed = val.pressed;
+                            if ('touched' in val) {
+                                touched = val.touched;
+                            }
+                            val = val.value;
+                        }
+                        var pct = Math.round(val * 100) + "%";
+                        b.style.backgroundSize = pct + " " + pct;
+                        b.className = "button";
+                        if (pressed) {
+                            b.className += " pressed";
+                        }
+                        if (touched) {
+                            b.className += " touched";
+                        }
+                    }
+            
+                    var axes = d.getElementsByClassName("axis");
+                    for (var i=0; i<controller.axes.length; i++) {
+                        var a = axes[i];
+                        a.innerHTML = i + ": " + controller.axes[i].toFixed(4);
+                        a.setAttribute("value", controller.axes[i]);
+                    }
+                }
+                rAF(updateStatus);
+            }
+
+            function scangamepads() {
+                var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+                for (var i = 0; i < gamepads.length; i++) {
+                    if (gamepads[i] && (gamepads[i].index in controllers)) {
+                        controllers[gamepads[i].index] = gamepads[i];
+                    }
+                }
+            }
+
+            if (haveEvents) {
+                window.addEventListener("gamepadconnected", connecthandler);
+                window.addEventListener("gamepaddisconnected", disconnecthandler);
+            } else if (haveWebkitEvents) {
+                window.addEventListener("webkitgamepadconnected", connecthandler);
+                window.addEventListener("webkitgamepaddisconnected", disconnecthandler);
+            } else {
+                setInterval(scangamepads, 500);
+            }
+
         </script>
     </body>
     <footer th:insert="fragments/common.html :: footer"></footer>

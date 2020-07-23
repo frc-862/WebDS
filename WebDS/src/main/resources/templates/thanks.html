@@ -6,15 +6,27 @@
         <th:block th:include="fragments/common.html :: headerfiles"></th:block>
     </head>
     <body>
-        
-        <p>
-            Thanks!
-        </p>
-
-        <script>
-            
-        </script>
-        
+        <div class="container">
+            <div class="py-5 text-center">
+                <img
+                    alt="Lightning Robotics"
+                    src="/images/lightning.png"
+                    style="max-width: 60%;"
+                />
+                <h2>Remote Operators Console</h2>
+                <p class="lead">
+                    Thank you for joining us!
+                </p>
+                <button
+                    id="send"
+                    class="btn btn-primary"
+                    onclick="window.location.href='/'"
+                >
+                    Go Home
+                </button>
+                
+            </div>
+        </div>        
     </body>
     <footer th:insert="fragments/common.html :: footer"></footer>
 </html>

@@ -40,7 +40,6 @@ public class WaitingSocketHandler extends TextWebSocketHandler {
             sessions.remove(session);
             //admin.sendMessage(new TextMessage("Admin Configured"));
         } else if(msg.equals("ADMINDIED")) {
-            //admin.close(); // TODO - not including this may be an issue
             admin = null;
         } else if(msg.equals("USRLEAV")) {
             if(admin != null) {
@@ -56,7 +55,7 @@ public class WaitingSocketHandler extends TextWebSocketHandler {
                 next.close();
             } else {
                 if(admin != null) {
-                    admin.sendMessage(new TextMessage("QUEUE IS EMPTY"));
+                    admin.sendMessage(new TextMessage("Queue Is Empty"));
                 } else {
                     throw new Exception("ADMIN NULL");
                 }
