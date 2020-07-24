@@ -22,6 +22,10 @@ public class DriverSocketHandler extends TextWebSocketHandler {
     private WebSocketSession admin = null;
 
     private WebSocketSession robot = null;
+
+    private static boolean driverEnabled = true;
+
+    private static boolean notifyAdminJoystickInput = false;
  
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -39,9 +43,33 @@ public class DriverSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         super.handleTextMessage(session, message);
         String msg = message.getPayload();
-        if(msg.contains("CMD:")) {
-            // fwd to robot
-            if(admin != null) admin.sendMessage(message); // TODO - temporary
+        if(msg.contains("CMD")) {
+            if(driverEnabled) {
+                // TODO - fwd to robot
+                if(notifyAdminJoystickInput && admin != null && admin.isOpen()) {
+                    admin.sendMessage(message);
+                }
+            }
+        } else if(msg.equals("ENABLEDRIVER")) {
+            driverEnabled = true;
+            if(admin != null && admin.isOpen()) {
+                admin.sendMessage(new TextMessage("Driver Joysticks Enabled"));
+            }
+        } else if(msg.equals("DISABLEDRIVER")) {
+            driverEnabled = false;
+            if(admin != null && admin.isOpen()) {
+                admin.sendMessage(new TextMessage("Driver Joysticks Disabled"));
+            }
+        } else if(msg.equals("LISTEN")) {
+            notifyAdminJoystickInput = true;
+            if(admin != null && admin.isOpen()) {
+                admin.sendMessage(new TextMessage("Displaying Driver Joystick Commands"));
+            }
+        } else if(msg.equals("IGNORE")) { 
+            notifyAdminJoystickInput = false;
+            if(admin != null && admin.isOpen()) {
+                admin.sendMessage(new TextMessage("Hiding Driver Joystick Commands"));
+            }
         } else if(msg.equals("IAMADMIN")) {
             admin = session;
         } else if(msg.equals("ADMINDIED")) {
@@ -61,7 +89,7 @@ public class DriverSocketHandler extends TextWebSocketHandler {
         } else if(msg.equals("IAMROBOT")) {
             robot = session;
         } else if(msg.equals("ROBOTDIED")) {
-            robot.close();
+            //robot.close();
             robot = null;
         } else if(msg.equals("DRIVERLEAVE")) {
             if(driver.isOpen()) {

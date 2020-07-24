@@ -101,6 +101,7 @@
                         '<div class="alert alert-success">Connected</div>'
                     );
                     ws.send("IAMDRIVER");
+                    configKeyboard();
                 };
                 ws.onclose = function () {
                     disconnect();
@@ -159,19 +160,42 @@
                 K: 3,
             };
 
+            var KeyVal = { // backwards like joystick
+                W: -1,
+                S: 1,
+                I: -1,
+                K: 1,
+            };
+
             function updateKeyboard() {
                 
                 var d = document.getElementById("keyboard");
 
                 var buttons = d.getElementsByClassName("button");
+
                 buttons[KeyID.W].className = (KeyPressed.W) ? "button pressed" : "button";
                 buttons[KeyID.S].className = (KeyPressed.S) ? "button pressed" : "button";
                 buttons[KeyID.I].className = (KeyPressed.I) ? "button pressed" : "button";
                 buttons[KeyID.K].className = (KeyPressed.K) ? "button pressed" : "button";
 
-                
+                var leftfwd = (KeyPressed.W) ? KeyVal.W : 0;
+                var leftrev = (KeyPressed.S) ? KeyVal.S : 0;
+                var rightfwd = (KeyPressed.I) ? KeyVal.I : 0;
+                var rightrev = (KeyPressed.K) ? KeyVal.K : 0;
+
+                var leftnet = leftfwd + leftrev;
+                var rightnet = rightfwd + rightrev;
+
+                sendUserInput(leftnet, rightnet);
                 
                 kRAF(updateKeyboard);
+            }
+
+            function sendUserInput(left, right) {
+                if(ws != null) {
+                    var cmd = "CMD:L:" + left + "R:" + right + ":CMD";
+                    ws.send(cmd);
+                }
             }
 
             function configKeyboard() {
@@ -205,7 +229,7 @@
             }
 
             // _addEventListener("keydown", document, handleKeyboardEvent); // add for keyup?
-            configKeyboard();
+            // configKeyboard();
 
             document.onkeydown = function(event) {
                 switch(event.keyCode) {
@@ -345,6 +369,12 @@
                         a.innerHTML = i + ": " + controller.axes[i].toFixed(4);
                         a.setAttribute("value", controller.axes[i]);
                     }
+
+                    var leftstick = controller.axes[1];
+                    var rightstick = controller.axes[3];
+
+                    sendUserInput(leftstick, rightstick);
+
                 }
                 rAF(updateStatus);
             }

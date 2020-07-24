@@ -81,6 +81,29 @@
                     </div>
                     <div class="row mb-3">
                         <div class="input-group">
+                            Manage Driver:&nbsp;
+                            <div class="btn-group">
+                                <button
+                                    type="button"
+                                    id="connect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="enableDriverInput()"
+                                >
+                                    Enable
+                                </button>
+                                <button
+                                    type="button"
+                                    id="disconnect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="disableDriverInput()"
+                                >
+                                    Disable
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="input-group">
                             Manage Connection:&nbsp;
                             <div class="btn-group">
                                 <button
@@ -98,6 +121,29 @@
                                     onclick="disconnectDS()"
                                 >
                                     Disconnect
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="input-group">
+                            Recieve Driver Packets:&nbsp;
+                            <div class="btn-group">
+                                <button
+                                    type="button"
+                                    id="connect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="listenJoysticks()"
+                                >
+                                    Recieve
+                                </button>
+                                <button
+                                    type="button"
+                                    id="disconnect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="deafenJoysticks()"
+                                >
+                                    Ignore
                                 </button>
                             </div>
                         </div>
@@ -154,6 +200,30 @@
 
             function showBroadcastMessageD(message) {
                 $("#driverconsole").html(message + $("#driverconsole").html());
+            }
+
+            function enableDriverInput() {
+                if(dws != null) {
+                    dws.send('ENABLEDRIVER');
+                }
+            }
+
+            function disableDriverInput() {
+                if(dws != null) {
+                    dws.send('DISABLEDRIVER');
+                }
+            }
+
+            function listenJoysticks() {
+                if(dws != null) {
+                    dws.send('LISTEN');
+                }
+            }
+
+            function deafenJoysticks() {
+                if(dws != null) {
+                    dws.send('IGNORE');
+                }
             }
             
             // NOTE - QUEUE 
