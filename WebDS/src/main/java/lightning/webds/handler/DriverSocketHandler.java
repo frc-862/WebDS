@@ -45,7 +45,9 @@ public class DriverSocketHandler extends TextWebSocketHandler {
         String msg = message.getPayload();
         if(msg.contains("CMD")) {
             if(driverEnabled) {
-                // TODO - fwd to robot
+                if(robot != null && robot.isOpen()) {
+                    robot.sendMessage(message);
+                }
                 if(notifyAdminJoystickInput && admin != null && admin.isOpen()) {
                     admin.sendMessage(message);
                 }
@@ -85,6 +87,7 @@ public class DriverSocketHandler extends TextWebSocketHandler {
                 driver.close();
                 driver = session;
             }
+            admin.sendMessage(new TextMessage("-"));
             admin.sendMessage(new TextMessage("New Driver Connected"));
         } else if(msg.equals("IAMROBOT")) {
             robot = session;

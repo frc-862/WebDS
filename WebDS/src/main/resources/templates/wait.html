@@ -40,6 +40,7 @@
                 ws = new WebSocket(url);
                 ws.onopen = function () {
                     showBroadcastMessage('<div class="alert alert-success">Connected -> Pending Robot Availibility</div>');
+                    ws.send('ADD');
                 };
                 ws.onmessage = function (data) {
                     var msg = data.data;
@@ -49,6 +50,9 @@
                         window.location.href='/run';
                         ws.close();
                     }
+                };
+                ws.onclose = function () {
+                    showBroadcastMessage('<div class="alert alert-danger">Disconnected</div>');
                 };
             }
 

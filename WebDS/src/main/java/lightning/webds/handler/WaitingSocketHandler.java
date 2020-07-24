@@ -41,6 +41,10 @@ public class WaitingSocketHandler extends TextWebSocketHandler {
             admin = session;
             sessions.remove(session);
             //admin.sendMessage(new TextMessage("Admin Configured"));
+        } else if(msg.equals("ADD")) {
+            if(admin != null && admin.isOpen()) {
+                admin.sendMessage(new TextMessage("+"));
+            }
         } else if(msg.equals("OPENQ")) {
             MainController.openQueue();
             if(admin.isOpen()) admin.sendMessage(new TextMessage("Queue Is Open"));
@@ -50,10 +54,8 @@ public class WaitingSocketHandler extends TextWebSocketHandler {
         } else if(msg.equals("ADMINDIED")) {
             admin = null;
         } else if(msg.equals("USRLEAV")) {
-            if(admin != null) {
-                admin.sendMessage(new TextMessage("User Exited Queue For DS"));
-            } else {
-                throw new Exception("ADMIN NULL");
+            if(admin != null && admin.isOpen()) {
+                //admin.sendMessage(new TextMessage("-"));
             }
         } else if(msg.equals("NEXT")) {
             //admin.sendMessage(new TextMessage(""));

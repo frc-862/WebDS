@@ -14,7 +14,13 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="py-5 text-center">
-                        <h4>Waiting Room Console</h4>                
+                        <h4>Queue Console</h4>                
+                    </div>
+                    <div class="row mb-3">
+                        <div class="lead">Users In Queue:</div>
+                        <div id="queue" class="alert alert-success">
+                            0
+                        </div>
                     </div>
                     <div class="row mb-3">
                         <div class="input-group">
@@ -169,6 +175,8 @@
 
         <script>
 
+            var queueSize = 0;
+
             // NOTE - DRIVER
 
             var dws;
@@ -187,7 +195,12 @@
                 }
                 dws.onmessage = function (data) {
                     var msg = data.data;
-                    showBroadcastMessageD(createTextNode(msg));
+                    if(msg =='-') {
+                        queueSize -= 1;
+                        drawQueue();
+                    } else {
+                        showBroadcastMessageD(createTextNode(msg));
+                    }
                 };
             }
 
@@ -244,8 +257,18 @@
                 }
                 ws.onmessage = function (data) {
                     var msg = data.data;
-                    showBroadcastMessage(createTextNode(msg));
+                    if(msg == '+') {
+                        queueSize += 1;
+                        drawQueue();
+                    } else {
+                        showBroadcastMessage(createTextNode(msg));
+                    }
                 };
+            }
+
+            function drawQueue() {
+                var q = document.getElementById("queue");
+                q.innerHTML = ("" + queueSize);
             }
 
             function disconnect() {
