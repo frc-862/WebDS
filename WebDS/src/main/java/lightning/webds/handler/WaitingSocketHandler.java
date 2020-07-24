@@ -10,6 +10,8 @@ import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+
+import lightning.webds.controller.MainController;
  
 public class WaitingSocketHandler extends TextWebSocketHandler {
  
@@ -39,6 +41,12 @@ public class WaitingSocketHandler extends TextWebSocketHandler {
             admin = session;
             sessions.remove(session);
             //admin.sendMessage(new TextMessage("Admin Configured"));
+        } else if(msg.equals("OPENQ")) {
+            MainController.openQueue();
+            if(admin.isOpen()) admin.sendMessage(new TextMessage("Queue Is Open"));
+        } else if(msg.equals("CLOSEQ")) {
+            MainController.closeQueue();
+            if(admin.isOpen()) admin.sendMessage(new TextMessage("Queue Is Closed"));
         } else if(msg.equals("ADMINDIED")) {
             admin = null;
         } else if(msg.equals("USRLEAV")) {

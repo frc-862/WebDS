@@ -6,9 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class MainController {
 
+    private static boolean qOpen = false;
+
     @RequestMapping("/")
     public String getMainPage() {
-        return "index";
+        if(qOpen) return "index";
+        return "closed";
     }
 
     @RequestMapping("/run")
@@ -24,6 +27,18 @@ public class MainController {
     @RequestMapping("/thx")
     public String getEndPage() {
         return "thanks";
+    }
+
+    public static void openQueue() {
+        qOpen = true;
+    }
+
+    public static void closeQueue() {
+        qOpen = false;
+    }
+
+    public static boolean isQueueOpen() {
+        return qOpen;
     }
     
 }

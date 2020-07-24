@@ -63,6 +63,10 @@ public class DriverSocketHandler extends TextWebSocketHandler {
         } else if(msg.equals("ROBOTDIED")) {
             robot.close();
             robot = null;
+        } else if(msg.equals("DRIVERLEAVE")) {
+            if(driver.isOpen()) {
+                driver.sendMessage(new TextMessage("LEAVE"));
+            }
         } else {                                                          //                                          } 
             sessions.forEach(webSocketSession -> {
                 try {

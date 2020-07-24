@@ -18,6 +18,29 @@
                     </div>
                     <div class="row mb-3">
                         <div class="input-group">
+                            Manage Queue:&nbsp;
+                            <div class="btn-group">
+                                <button
+                                    type="button"
+                                    id="connect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="openQueue()"
+                                >
+                                    Open Queue
+                                </button>
+                                <button
+                                    type="button"
+                                    id="disconnect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="closeQueue()"
+                                >
+                                    Close Queue
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="input-group">
                             Manage Connection:&nbsp;
                             <div class="btn-group">
                                 <button
@@ -78,6 +101,15 @@
                                 </button>
                             </div>
                         </div>
+                    </div>
+                    <div class="row mb-3">
+                        <button
+                            id="inv"
+                            class="btn btn-primary"
+                            onclick="removeDriver()"
+                            >
+                                Remove Driver
+                        </button>
                     </div>
                     <div class="row mb-3">
                         <div id="driverconsole"></div>
@@ -163,6 +195,24 @@
 
             function inviteNext() {
                 ws.send('NEXT');
+            }
+
+            function openQueue() {
+                if(ws != null) {
+                    ws.send('OPENQ')
+                }
+            }
+
+            function closeQueue() {
+                if(ws != null) {
+                    ws.send('CLOSEQ')
+                }
+            }
+
+            function removeDriver() {
+                if(dws != null) {
+                    dws.send('DRIVERLEAVE')
+                }
             }
 
             // NOTE - Window Init

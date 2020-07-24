@@ -21,7 +21,7 @@
 
             .button {
                 display: inline-block;
-                width: 1em;
+                min-width: 100;
                 text-align: center;
                 padding: 1em;
                 border-radius: 20px;
@@ -139,51 +139,35 @@
               window.requestAnimationFrame;
 
             var Key = {
-                LEFT: 37,
-                UP: 38,
-                RIGHT: 39,
-                DOWN: 40,
+                W: 87,
+                S: 83,
+                I: 73,
+                K: 75,
             };
 
             var KeyPressed = {
-                LEFT: false,
-                UP: false,
-                RIGHT: false,
-                DOWN: false,
+                W: false,
+                S: false,
+                I: false,
+                K: false,
             };
 
             var KeyID = {
-                LEFT: 0,
-                UP: 1, 
-                RIGHT: 2,
-                DOWN: 3,
+                W: 0,
+                S: 1, 
+                I: 2,
+                K: 3,
             };
-
-            function _addEventListener(evt, element, fn) {
-                if (window.addEventListener) {
-                    element.addEventListener(evt, fn, false);
-                } else {
-                    element.attachEvent("on" + evt, fn);
-                }
-            }
-
-            function _removeEventListener(evt, element, fn) {
-                if (window.removeEventListener) {
-                    element.removeEventListener(evt, fn, false);
-                } else {
-                    element.detachEvent("on" + evt, fn);
-                }
-            }
 
             function updateKeyboard() {
                 
                 var d = document.getElementById("keyboard");
 
                 var buttons = d.getElementsByClassName("button");
-                buttons[KeyID.LEFT].className = (KeyPressed.LEFT) ? "button pressed" : "button";
-                buttons[KeyID.UP].className = (KeyPressed.UP) ? "button pressed" : "button";
-                buttons[KeyID.DOWN].className = (KeyPressed.DOWN) ? "button pressed" : "button";
-                buttons[KeyID.RIGHT].className = (KeyPressed.RIGHT) ? "button pressed" : "button";
+                buttons[KeyID.W].className = (KeyPressed.W) ? "button pressed" : "button";
+                buttons[KeyID.S].className = (KeyPressed.S) ? "button pressed" : "button";
+                buttons[KeyID.I].className = (KeyPressed.I) ? "button pressed" : "button";
+                buttons[KeyID.K].className = (KeyPressed.K) ? "button pressed" : "button";
 
                 
                 
@@ -202,10 +186,10 @@
                     var e = document.createElement("span");
                     e.className = "button";
 
-                    if(i == KeyID.LEFT) e.innerHTML = "&larr; ";
-                    if(i == KeyID.UP) e.innerHTML = "&uarr; ";
-                    if(i == KeyID.DOWN) e.innerHTML = "&darr; ";
-                    if(i == KeyID.RIGHT) e.innerHTML = "&rarr; ";
+                    if(i == KeyID.W) e.innerHTML = "W&uarr; ";
+                    if(i == KeyID.S) e.innerHTML = "S&darr; ";
+                    if(i == KeyID.I) e.innerHTML = "I&uarr; ";
+                    if(i == KeyID.K) e.innerHTML = "K&darr; ";
 
                     b.appendChild(e);
                 }
@@ -224,46 +208,36 @@
             configKeyboard();
 
             document.onkeydown = function(event) {
-                var d = document.getElementById("debug");
                 switch(event.keyCode) {
-                    case Key.LEFT:
-                        KeyPressed.LEFT = true;
-                        d.innerHTML += "LT ";
+                    case Key.W:
+                        KeyPressed.W = true;
                         break;
-                    case Key.UP:
-                        KeyPressed.UP = true;
-                        d.innerHTML += "UT ";
+                    case Key.S:
+                        KeyPressed.S = true;
                         break;
-                    case Key.RIGHT:
-                        KeyPressed.RIGHT = true;
-                        d.innerHTML += "RT ";
+                    case Key.I:
+                        KeyPressed.I = true;
                         break;
-                    case Key.DOWN:
-                        KeyPressed.DOWN = true;
-                        d.innerHTML += "DT ";
+                    case Key.K:
+                        KeyPressed.K = true;
                         break;
                     default:
                 }
             }
 
             document.onkeyup = function(event) {
-                var d = document.getElementById("debug");
                 switch(event.keyCode) {
-                    case Key.LEFT:
-                        KeyPressed.LEFT = false;
-                        d.innerHTML += "LF ";
+                    case Key.W:
+                        KeyPressed.W = false;
                         break;
-                    case Key.UP:
-                        KeyPressed.UP = false;
-                        d.innerHTML += "UF ";
+                    case Key.S:
+                        KeyPressed.S = false;
                         break;
-                    case Key.RIGHT:
-                        KeyPressed.RIGHT = false;
-                        d.innerHTML += "RF ";
+                    case Key.I:
+                        KeyPressed.I = false;
                         break;
-                    case Key.DOWN:
-                        KeyPressed.DOWN = false;
-                        d.innerHTML += "DF ";
+                    case Key.K:
+                        KeyPressed.K = false;
                         break;
                     default:
                 }
@@ -281,7 +255,6 @@
             function connecthandler(e) {
                 addgamepad(e.gamepad);
                 document.getElementById("inpdev").innerHTML = "Gamepad";
-                // _removeEventListener("keydown", document, handleKeyboardEvent);
                 removeKeyboard();
                 gamepad = true;
             }
@@ -289,7 +262,6 @@
             function disconnecthandler(e) {
                 removegamepad(e.gamepad);
                 document.getElementById("inpdev").innerHTML = "Keyboard";
-                // _addEventListener("keydown", document, handleKeyboardEvent);
                 configKeyboard();
                 gamepad = false;
             }
