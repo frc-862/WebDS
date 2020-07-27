@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <link rel="icon" type="image/png" href="images/icon.png" />
+    <head>
+        <title>Lightning Robotics</title>
+        <th:block th:include="fragments/common.html :: headerfiles"></th:block>
+    </head>
+    <body>
+
+        <div class="container">
+            <div class="py-5 text-center">
+                <h2>Remote Operators Admin Console</h2>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="py-5 text-center">
+                        <h4>Queue Console</h4>                
+                    </div>
+                    <div class="row mb-3">
+                        <div class="lead">Users In Queue:</div>
+                        <div id="queue" class="alert alert-success">
+                            0
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="input-group">
+                            Manage Queue:&nbsp;
+                            <div class="btn-group">
+                                <button
+                                    type="button"
+                                    id="connect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="openQueue()"
+                                >
+                                    Open Queue
+                                </button>
+                                <button
+                                    type="button"
+                                    id="disconnect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="closeQueue()"
+                                >
+                                    Close Queue
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="input-group">
+                            Manage Connection:&nbsp;
+                            <div class="btn-group">
+                                <button
+                                    type="button"
+                                    id="connect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="connect()"
+                                >
+                                    Connect
+                                </button>
+                                <button
+                                    type="button"
+                                    id="disconnect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="disconnect()"
+                                >
+                                    Disconnect
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <button
+                        id="inv"
+                        class="btn btn-primary"
+                        onclick="inviteNext()"
+                        >
+                            Invite Next
+                        </button>
+                    </div>
+                    <div class="row mb-3">
+                        <div id="waitconsole"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="py-5 text-center">
+                        <h4>Driver Console</h4>                
+                    </div>
+                    <div class="row mb-3">
+                        <div class="input-group">
+                            Manage Driver:&nbsp;
+                            <div class="btn-group">
+                                <button
+                                    type="button"
+                                    id="connect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="enableDriverInput()"
+                                >
+                                    Enable
+                                </button>
+                                <button
+                                    type="button"
+                                    id="disconnect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="disableDriverInput()"
+                                >
+                                    Disable
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="input-group">
+                            Manage Connection:&nbsp;
+                            <div class="btn-group">
+                                <button
+                                    type="button"
+                                    id="connect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="connectDS()"
+                                >
+                                    Connect
+                                </button>
+                                <button
+                                    type="button"
+                                    id="disconnect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="disconnectDS()"
+                                >
+                                    Disconnect
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="input-group">
+                            Recieve Driver Packets:&nbsp;
+                            <div class="btn-group">
+                                <button
+                                    type="button"
+                                    id="connect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="listenJoysticks()"
+                                >
+                                    Recieve
+                                </button>
+                                <button
+                                    type="button"
+                                    id="disconnect"
+                                    class="btn btn-sm btn-outline-secondary"
+                                    onclick="deafenJoysticks()"
+                                >
+                                    Ignore
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <button
+                            id="inv"
+                            class="btn btn-primary"
+                            onclick="removeDriver()"
+                            >
+                                Remove Driver
+                        </button>
+                    </div>
+                    <div class="row mb-3">
+                        <div id="driverconsole"></div>
+                    </div>
+                    <!--
+                        Things Here
+                    -->
+                </div>
+            </div>
+        </div>
+
+        <script>
+
+            var queueSize = 0;
+
+            // NOTE - DRIVER
+
+            var dws;
+            function connectDS() {
+                var url =
+                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/ds}]]*/ "ws://localhost:8080/ds";
+                /*]]>*/
+                dws = new WebSocket(url);
+                dws.onopen = function () {
+                    showBroadcastMessageD('<div class="alert alert-success">Connected to Driver Socket</div>');
+                    dws.send('IAMADMIN');
+                };
+                dws.onclose = function () {
+                    dws.send('ADMINDIED');
+                    showBroadcastMessageD('<div class="alert alert-danger">Disconnected From Driver Socket - Please Re-Connect</div>');
+                }
+                dws.onmessage = function (data) {
+                    var msg = data.data;
+                    if(msg =='-') {
+                        queueSize -= 1;
+                        drawQueue();
+                    } else {
+                        showBroadcastMessageD(createTextNode(msg));
+                    }
+                };
+            }
+
+            function disconnectDS() {
+                if (dws != null) {
+                    dws.close();
+                    showBroadcastMessageD('<div class="alert alert-warning">Admin User Manually Disconnected From Driver Socket</div>');
+                }
+            }
+
+            function showBroadcastMessageD(message) {
+                $("#driverconsole").html(message + $("#driverconsole").html());
+            }
+
+            function enableDriverInput() {
+                if(dws != null) {
+                    dws.send('ENABLEDRIVER');
+                }
+            }
+
+            function disableDriverInput() {
+                if(dws != null) {
+                    dws.send('DISABLEDRIVER');
+                }
+            }
+
+            function listenJoysticks() {
+                if(dws != null) {
+                    dws.send('LISTEN');
+                }
+            }
+
+            function deafenJoysticks() {
+                if(dws != null) {
+                    dws.send('IGNORE');
+                }
+            }
+            
+            // NOTE - QUEUE 
+
+            var ws;
+            function connect() {
+                var url =
+                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/wait}]]*/ "ws://localhost:8080/wait";
+                /*]]>*/
+                ws = new WebSocket(url);
+                ws.onopen = function () {
+                    showBroadcastMessage('<div class="alert alert-success">Connected to Queue</div>');
+                    ws.send('IAMADMIN');
+                };
+                ws.onclose = function () {
+                    ws.send('ADMINDIED');
+                    showBroadcastMessage('<div class="alert alert-danger">Disconnected From Queue - Please Re-Connect</div>');
+                }
+                ws.onmessage = function (data) {
+                    var msg = data.data;
+                    if(msg == '+') {
+                        queueSize += 1;
+                        drawQueue();
+                    } else {
+                        showBroadcastMessage(createTextNode(msg));
+                    }
+                };
+            }
+
+            function drawQueue() {
+                var q = document.getElementById("queue");
+                q.innerHTML = ("" + queueSize);
+            }
+
+            function disconnect() {
+                if (ws != null) {
+                    ws.close();
+                    showBroadcastMessage('<div class="alert alert-warning">Admin User Manually Disconnected From Queue</div>');
+                }
+            }
+
+            function showBroadcastMessage(message) {
+                $("#waitconsole").html(message + $("#waitconsole").html());
+            }
+
+            function createTextNode(msg) {
+                return '<div class="alert alert-info">' + msg + "</div>";
+            }
+
+            function inviteNext() {
+                ws.send('NEXT');
+            }
+
+            function openQueue() {
+                if(ws != null) {
+                    ws.send('OPENQ')
+                }
+            }
+
+            function closeQueue() {
+                if(ws != null) {
+                    ws.send('CLOSEQ')
+                }
+            }
+
+            function removeDriver() {
+                if(dws != null) {
+                    dws.send('DRIVERLEAVE')
+                }
+            }
+
+            // NOTE - Window Init
+
+            function connectall() {
+                connect();
+                connectDS();
+            }
+
+            window.onload = connectall();
+
+        </script>
+        
+    </body>
+    <footer th:insert="fragments/common.html :: footer"></footer>
+</html>

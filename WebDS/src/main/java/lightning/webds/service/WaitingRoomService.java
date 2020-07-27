@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lightning.webds.entity.User;
-import lightning.webds.entity.WaitingRoom;
+import lightning.webds.repository.WaitingRoom;
 
 @Service
 public class WaitingRoomService {
     
     @Autowired
-    private WaitingRoom wr;
+    private static WaitingRoom wr = new WaitingRoom();
 
     public void addUser(User usr) {
         wr.add(usr);

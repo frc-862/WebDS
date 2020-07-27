@@ -5,20 +5,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import lightning.webds.entity.User;
+// import lightning.webds.entity.User;
 import lightning.webds.service.WaitingRoomService;
 
 @Controller
 public class WaitingRoomController {
 
     @Autowired
-    private WaitingRoomService wrs;
+    private static WaitingRoomService wrs = new WaitingRoomService();
     
     @RequestMapping("/wait/{name}/{email}")
     public String initializeWaitingRoom(@PathVariable("name") String name, @PathVariable("email") String email) {
-        User curr = new User(name, email);
-        wrs.addUser(curr);
+        //User curr = new User(name, email);
+        //wrs.addUser(curr);
         return "wait";
+    }
+
+    public static WaitingRoomService getWRSInstance() {
+        return wrs;
     }
 
     // @RequestMapping("/line")

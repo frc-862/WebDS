@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <link rel="icon" type="image/png" href="images/icon.png" />
+    <head>
+        <title>Lightning Robotics</title>
+        <th:block th:include="fragments/common.html :: headerfiles"></th:block>
+        <style>
+            .axes {
+                padding: 1em;
+            }
+
+            .buttons {
+                min-width: 50px;
+                margin-left: 1em;
+            }
+
+            /*meter*/.axis {
+                min-width: 200px;
+                margin: 1em;
+            }
+
+            .button {
+                display: inline-block;
+                min-width: 100;
+                text-align: center;
+                padding: 1em;
+                border-radius: 20px;
+                border: 1px solid black;
+                background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAAxJREFUCNdjYPjPAAACAgEAqiqeJwAAAABJRU5ErkJggg==);
+                background-size: 0% 0%;
+                background-position: 50% 50%;
+                background-repeat: no-repeat;
+            }
+
+            .pressed {
+                border: 1px solid red;
+                background-color: rgb(0, 255, 0);
+            }
+
+            .touched::after {
+                content: "";
+                display: block;
+                position: absolute;
+                margin-top: -0.2em;
+                margin-left: -0.5em;
+                font-size: 0.8em;
+                opacity: 0.7;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="py-5 text-center">
+                <img
+                    alt="Lightning Robotics"
+                    src="/images/lightning.png"
+                    style="max-width: 60%;"
+                />
+                <h2>Remote Operators Console</h2>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Input Configuration</h4>
+                    <!--
+                        Image about Keyboard/joystick input
+                        flag that details what input is active (keyboard v. joystick)
+                    -->
+                    <div class="row mb-3">
+                        <div class="lead">Configured Input Device:</div>
+                        <div id="inpdev" class="alert alert-success">
+                            Keyboard
+                        </div>
+                    </div>
+                    <div class="lead">Input: </div>
+                    <div id="info"></div>
+                </div>
+                <div class="col-md-6">
+                    <h4>Event Log</h4>
+                    <!--
+                        <div id="debug"></div>
+                        
+                    -->
+                    <div id="dbg"></div>
+                    <div id="console"></div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            var dbg = document.getElementById("dbg");
+
+            var ws;
+            function connect() {
+                var url =
+                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/ds}]]*/ "ws://localhost:8080/ds";
+                /*]]>*/
+                ws = new WebSocket(url);
+                ws.onopen = function () {
+                    showBroadcastMessage(
+                        '<div class="alert alert-success">Connected</div>'
+                    );
+                    ws.send("IAMDRIVER");
+                    configKeyboard();
+                };
+                ws.onclose = function () {
+                    disconnect();
+                    //window.location.href = "/error";
+                };
+                ws.onmessage = function (data) {
+                    var msg = data.data;
+                    if (msg == "LEAVE") {
+                        window.location.href = "/thx";
+                    }
+                    showBroadcastMessage(createTextNode(msg));
+                };
+            }
+
+            function disconnect() {
+                if (ws != null) {
+                    ws.close();
+                    showBroadcastMessage(
+                        '<div class="alert alert-warning">Disconnected</div>'
+                    );
+                }
+            }
+
+            function showBroadcastMessage(message) {
+                $("#console").html(message + $("#console").html());
+            }
+
+            function createTextNode(msg) {
+                return '<div class="alert alert-info">' + msg + "</div>";
+            }
+
+            window.onload = connect();
+
+            var kRAF = window.mozRequestAnimationFrame ||
+              window.webkitRequestAnimationFrame ||
+              window.requestAnimationFrame;
+
+            var Key = {
+                W: 87,
+                S: 83,
+                I: 73,
+                K: 75,
+            };
+
+            var KeyPressed = {
+                W: false,
+                S: false,
+                I: false,
+                K: false,
+            };
+
+            var KeyID = {
+                W: 0,
+                S: 1, 
+                I: 2,
+                K: 3,
+            };
+
+            var KeyVal = { // backwards like joystick
+                W: -1,
+                S: 1,
+                I: -1,
+                K: 1,
+            };
+
+            function updateKeyboard() {
+                
+                var d = document.getElementById("keyboard");
+
+                var buttons = d.getElementsByClassName("button");
+
+                buttons[KeyID.W].className = (KeyPressed.W) ? "button pressed" : "button";
+                buttons[KeyID.S].className = (KeyPressed.S) ? "button pressed" : "button";
+                buttons[KeyID.I].className = (KeyPressed.I) ? "button pressed" : "button";
+                buttons[KeyID.K].className = (KeyPressed.K) ? "button pressed" : "button";
+
+                var leftfwd = (KeyPressed.W) ? KeyVal.W : 0;
+                var leftrev = (KeyPressed.S) ? KeyVal.S : 0;
+                var rightfwd = (KeyPressed.I) ? KeyVal.I : 0;
+                var rightrev = (KeyPressed.K) ? KeyVal.K : 0;
+
+                var leftnet = leftfwd + leftrev;
+                var rightnet = rightfwd + rightrev;
+
+                sendUserInput(leftnet, rightnet);
+                
+                kRAF(updateKeyboard);
+            }
+
+            function sendUserInput(left, right) {
+                if(ws != null) {
+                    var cmd = "CMD:L:" + left + "R:" + right + ":CMD";
+                    ws.send(cmd);
+                }
+            }
+
+            function configKeyboard() {
+                var d = document.createElement("div");
+                d.setAttribute("id", "keyboard");
+                var t = document.createElement("h6");
+                t.appendChild(document.createTextNode("Active Keyboard"));
+                d.appendChild(t);
+                var b = document.createElement("div");
+                b.className = "buttons";
+                for (var i = 0 ; i < 4 ; i++) {
+                    var e = document.createElement("span");
+                    e.className = "button";
+
+                    if(i == KeyID.W) e.innerHTML = "W&uarr; ";
+                    if(i == KeyID.S) e.innerHTML = "S&darr; ";
+                    if(i == KeyID.I) e.innerHTML = "I&uarr; ";
+                    if(i == KeyID.K) e.innerHTML = "K&darr; ";
+
+                    b.appendChild(e);
+                }
+                d.appendChild(b);
+                document.getElementById("info").appendChild(d);
+
+                kRAF(updateKeyboard); // need animation frame to send on server?
+            }
+
+            function removeKeyboard() {
+                var d = document.getElementById("keyboard");
+                document.getElementById("info").removeChild(d);
+            }
+
+            // _addEventListener("keydown", document, handleKeyboardEvent); // add for keyup?
+            // configKeyboard();
+
+            document.onkeydown = function(event) {
+                switch(event.keyCode) {
+                    case Key.W:
+                        KeyPressed.W = true;
+                        break;
+                    case Key.S:
+                        KeyPressed.S = true;
+                        break;
+                    case Key.I:
+                        KeyPressed.I = true;
+                        break;
+                    case Key.K:
+                        KeyPressed.K = true;
+                        break;
+                    default:
+                }
+            }
+
+            document.onkeyup = function(event) {
+                switch(event.keyCode) {
+                    case Key.W:
+                        KeyPressed.W = false;
+                        break;
+                    case Key.S:
+                        KeyPressed.S = false;
+                        break;
+                    case Key.I:
+                        KeyPressed.I = false;
+                        break;
+                    case Key.K:
+                        KeyPressed.K = false;
+                        break;
+                    default:
+                }
+            }
+
+            var gamepad = false;
+
+            var haveEvents = 'GamepadEvent' in window;
+            var haveWebkitEvents = 'WebKitGamepadEvent' in window;
+            var controllers = {};
+            var rAF = window.mozRequestAnimationFrame ||
+              window.webkitRequestAnimationFrame ||
+              window.requestAnimationFrame;
+
+            function connecthandler(e) {
+                addgamepad(e.gamepad);
+                document.getElementById("inpdev").innerHTML = "Gamepad";
+                removeKeyboard();
+                gamepad = true;
+            }
+
+            function disconnecthandler(e) {
+                removegamepad(e.gamepad);
+                document.getElementById("inpdev").innerHTML = "Keyboard";
+                configKeyboard();
+                gamepad = false;
+            }
+
+            function addgamepad(gamepad) {
+                controllers[gamepad.index] = gamepad; 
+                var d = document.createElement("div");
+                d.setAttribute("id", "controller" + gamepad.index);
+                var t = document.createElement("h6");
+                t.appendChild(document.createTextNode("Active Gamepad: " + gamepad.id));
+                d.appendChild(t);
+                var b = document.createElement("div");
+                b.className = "buttons";
+                for (var i=0; i<gamepad.buttons.length; i++) {
+                    var e = document.createElement("span");
+                    e.className = "button";
+                    //e.id = "b" + i;
+                    e.innerHTML = i;
+                    b.appendChild(e);
+                }
+                d.appendChild(b);
+                var a = document.createElement("div");
+                a.className = "axes";
+                for (i=0; i<gamepad.axes.length; i++) {
+                    e = document.createElement("meter");
+                    e.className = "axis";
+                    //e.id = "a" + i;
+                    e.setAttribute("min", "-1");
+                    e.setAttribute("max", "1");
+                    e.setAttribute("value", "0");
+                    e.innerHTML = i;
+                    a.appendChild(e);
+                }
+                d.appendChild(a);
+
+                // document.getElementById("info").style.display = "none"; /////////
+                // document.body.appendChild(d);
+                document.getElementById("info").appendChild(d);
+
+                rAF(updateStatus);
+            }
+
+            function removegamepad(gamepad) {
+                var d = document.getElementById("controller" + gamepad.index);
+                document.getElementById("info").removeChild(d);
+                delete controllers[gamepad.index];
+            }
+
+            function updateStatus() {
+                scangamepads();
+                for (j in controllers) {
+                    var controller = controllers[j];
+                    var d = document.getElementById("controller" + j);
+                    var buttons = d.getElementsByClassName("button");
+                    for (var i=0; i<controller.buttons.length; i++) {
+                        var b = buttons[i];
+                        var val = controller.buttons[i];
+                        var pressed = val == 1.0;
+                        var touched = false;
+                        if (typeof(val) == "object") {
+                            pressed = val.pressed;
+                            if ('touched' in val) {
+                                touched = val.touched;
+                            }
+                            val = val.value;
+                        }
+                        var pct = Math.round(val * 100) + "%";
+                        b.style.backgroundSize = pct + " " + pct;
+                        b.className = "button";
+                        if (pressed) {
+                            b.className += " pressed";
+                        }
+                        if (touched) {
+                            b.className += " touched";
+                        }
+                    }
+            
+                    var axes = d.getElementsByClassName("axis");
+                    for (var i=0; i<controller.axes.length; i++) {
+                        var a = axes[i];
+                        a.innerHTML = i + ": " + controller.axes[i].toFixed(4);
+                        a.setAttribute("value", controller.axes[i]);
+                    }
+
+                    var leftstick = controller.axes[1];
+                    var rightstick = controller.axes[3];
+
+                    sendUserInput(leftstick, rightstick);
+
+                }
+                rAF(updateStatus);
+            }
+
+            function scangamepads() {
+                var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+                for (var i = 0; i < gamepads.length; i++) {
+                    if (gamepads[i] && (gamepads[i].index in controllers)) {
+                        controllers[gamepads[i].index] = gamepads[i];
+                    }
+                }
+            }
+
+            if (haveEvents) {
+                window.addEventListener("gamepadconnected", connecthandler);
+                window.addEventListener("gamepaddisconnected", disconnecthandler);
+            } else if (haveWebkitEvents) {
+                window.addEventListener("webkitgamepadconnected", connecthandler);
+                window.addEventListener("webkitgamepaddisconnected", disconnecthandler);
+            } else {
+                setInterval(scangamepads, 500);
+            }
+
+        </script>
+    </body>
+    <footer th:insert="fragments/common.html :: footer"></footer>
+</html>

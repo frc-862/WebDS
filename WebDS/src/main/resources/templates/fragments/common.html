@@ -1,18 +1,27 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head th:fragment="headerfiles">
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.4.1/css/bootstrap.css}"/>
-        <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
-        <script th:src="@{/webjars/jquery/3.4.1/jquery.js}" ></script> 
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            th:href="@{/webjars/bootstrap/4.4.1/css/bootstrap.css}"
+        />
+        <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}" />
+        <script th:src="@{/webjars/jquery/3.4.1/jquery.js}"></script>
     </head>
     <body>
-        <footer th:fragment="footer" class="my-5 text-muted text-center text-small">
+        <footer
+            th:fragment="footer"
+            class="my-5 text-muted text-center text-small"
+        >
             <!--<p class="mb-1">© 2020 Lightning Robotics</p>-->
             <p class="mb-1">Lightning Robotics</p>
             <ul class="list-inline">
-                <li class="list-inline-item"><a href="http://www.lightningrobotics.com">Website</a></li>
+                <li class="list-inline-item">
+                    <a href="http://www.lightningrobotics.com">Website</a>
+                </li>
             </ul>
         </footer>
     </body>

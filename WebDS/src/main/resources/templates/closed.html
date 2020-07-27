@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <link rel="icon" type="image/png" href="images/icon.png" />
+    <head>
+        <title>Lightning Robotics</title>
+        <th:block th:include="fragments/common.html :: headerfiles"></th:block>
+    </head>
+    <body>
+        <div class="container">
+            <div class="py-5 text-center">
+                <img
+                    alt="Lightning Robotics"
+                    src="/images/lightning.png"
+                    style="max-width: 60%;"
+                />
+                <h2>Remote Operators Console</h2>
+                <p class="lead">
+                    The queue is not open. Please try again later.
+                </p>                
+            </div>
+        </div>        
+    </body>
+    <footer th:insert="fragments/common.html :: footer"></footer>
+</html>

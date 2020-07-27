@@ -1,4 +1,4 @@
-package lightning.webds.entity;
+package lightning.webds.repository;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -6,6 +6,8 @@ import java.util.Deque;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
+
+import lightning.webds.entity.User;
 
 @Repository
 public class WaitingRoom {
