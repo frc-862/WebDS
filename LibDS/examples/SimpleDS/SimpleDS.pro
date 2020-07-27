@@ -10,13 +10,17 @@ TARGET = SimpleDS
 HEADERS += \
   $$PWD/src/Window.h \
   $$PWD/src/VirtualJoystick.h \
-    src/Socket.h
+    src/Socket.h \
+    src/RemoteJoystick.h \
+    src/SocketEvent.h
 
 SOURCES += \
   $$PWD/src/main.cpp \
   $$PWD/src/Window.cpp \
   $$PWD/src/VirtualJoystick.cpp \
-    src/Socket.cpp
+    src/Socket.cpp \
+    src/RemoteJoystick.cpp \
+    src/SocketEvent.cpp
 
 FORMS += \
   $$PWD/src/Window.ui

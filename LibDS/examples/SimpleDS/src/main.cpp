@@ -5,6 +5,7 @@
 #include "Window.h"
 #include "VirtualJoystick.h"
 #include "Socket.h"
+#include "RemoteJoystick.h"
 
 int main (int argc, char* argv[])
 {
@@ -17,13 +18,13 @@ int main (int argc, char* argv[])
     Window window;
     window.show();
 
-    /* Initialize the Virtual Joystick */
-    VirtualJoystick joystick;
-    Q_UNUSED (joystick);
-
     /* Initialize the Socket for Remote Joystick Input */
     Socket socket;
-    socket.Connect();
+
+    /* Initialize the Joystick */
+    // VirtualJoystick joystick;
+    RemoteJoystick joystick;
+    Q_UNUSED (joystick);
 
     return app.exec();
 }

@@ -4,17 +4,24 @@
 #include <QObject>
 #include <QtNetwork/QTcpSocket>
 #include <QString>
+#include <QIODevice>
+#include <QEvent>
+#include <QApplication>
+
+#include "SocketEvent.h"
 
 class Socket : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Socket(QObject *parent = 0);
+    explicit Socket(QObject* parent = 0);
     ~Socket();
-    void Connect();
-    QString readJoystickData();
-    void CloseConnection();
+    void onDisconnect();
+
+private slots:
+    void readJoystickData();
+
 
 private:
     QTcpSocket* socket;
