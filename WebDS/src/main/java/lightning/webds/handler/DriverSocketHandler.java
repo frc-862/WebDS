@@ -91,6 +91,7 @@ public class DriverSocketHandler extends TextWebSocketHandler {
             admin.sendMessage(new TextMessage("New Driver Connected"));
         } else if(msg.equals("IAMROBOT")) {
             robot = session;
+            if(admin != null && admin.isOpen()) admin.sendMessage(new TextMessage("New Robot Connected"));
         } else if(msg.equals("ROBOTDIED")) {
             //robot.close();
             robot = null;

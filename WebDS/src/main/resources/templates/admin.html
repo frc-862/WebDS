@@ -77,6 +77,17 @@
                             Invite Next
                         </button>
                     </div>
+                    <!--
+                    <div class="row mb-3">
+                        <button
+                        id="waitc"
+                        class="btn btn-primary"
+                        onclick="clear('waitc')"
+                        >
+                            Clear Console
+                        </button>
+                    </div>
+                    -->
                     <div class="row mb-3">
                         <div id="waitconsole"></div>
                     </div>
@@ -163,6 +174,17 @@
                                 Remove Driver
                         </button>
                     </div>
+                    <!--
+                    <div class="row mb-3">
+                        <button
+                        id="drivec"
+                        class="btn btn-primary"
+                        onclick="clear('drivec')"
+                        >
+                            Clear Console
+                        </button>
+                    </div>
+                    -->
                     <div class="row mb-3">
                         <div id="driverconsole"></div>
                     </div>
@@ -174,6 +196,16 @@
         </div>
 
         <script>
+
+            function clear(id) {
+                var d;
+                if(id == 'drivec') {
+                    d = document.getElementById("driverconsole");
+                } else if(id == 'waitc') {
+                    d = document.getElementById("waitconsole");
+                }
+                d.innerHTML = '';
+            }
 
             var queueSize = 0;
 
