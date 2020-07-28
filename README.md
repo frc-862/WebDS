@@ -27,8 +27,8 @@ Spring web app.
 ### WebDS -> TODO
 
 - [ ] Utilize [LibDS](https://github.com/FRC-Utilities/LibDS), import with jnr-ffi
-- [ ] Add Queueing system that only allows one websocket connection at a time
-- [ ] Add ability for keyboard/usb joystick data to be sent to server
+- [X] Add Queueing system that only allows one websocket connection at a time
+- [X] Add ability for keyboard/usb joystick data to be sent to server
 
 ### Building WebDS
 
