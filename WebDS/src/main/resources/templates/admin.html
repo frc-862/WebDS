@@ -299,6 +299,7 @@
             }
 
             function drawQueue() {
+                if(queueSize < 0) queueSize = 0;
                 var q = document.getElementById("queue");
                 q.innerHTML = ("" + queueSize);
             }
@@ -324,19 +325,19 @@
 
             function openQueue() {
                 if(ws != null) {
-                    ws.send('OPENQ')
+                    ws.send('OPENQ');
                 }
             }
 
             function closeQueue() {
                 if(ws != null) {
-                    ws.send('CLOSEQ')
+                    ws.send('CLOSEQ');
                 }
             }
 
             function removeDriver() {
                 if(dws != null) {
-                    dws.send('DRIVERLEAVE')
+                    dws.send('DRIVERLEAVE');
                 }
             }
 

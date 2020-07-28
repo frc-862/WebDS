@@ -96,7 +96,7 @@ public class DriverSocketHandler extends TextWebSocketHandler {
             //robot.close();
             robot = null;
         } else if(msg.equals("DRIVERLEAVE")) {
-            if(driver.isOpen()) {
+            if(driver != null && driver.isOpen()) {
                 driver.sendMessage(new TextMessage("LEAVE"));
             }
         } else {                                                          //                                          } 
