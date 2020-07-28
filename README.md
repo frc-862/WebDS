@@ -12,9 +12,10 @@ Sub-project `SimpleDS` has been modified and will be given ability to connect to
 
 ### LibDS -> TODO
 
+- [ ] Test Test Test!
 - [ ] Build standalone executable
-- [ ] Implement two-way communication to server
-- [ ] Implement server
+- [X] Implement two-way communication to server
+- [X] Implement server
 
 ### Building LibDS
 
@@ -26,7 +27,7 @@ Spring web app.
 
 ### WebDS -> TODO
 
-- [ ] Utilize [LibDS](https://github.com/FRC-Utilities/LibDS), import with jnr-ffi
+- [ ] Test Test Test!
 - [X] Add Queueing system that only allows one websocket connection at a time
 - [X] Add ability for keyboard/usb joystick data to be sent to server
 
