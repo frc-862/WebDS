@@ -19,7 +19,7 @@ int main (int argc, char* argv[])
     window.show();
 
     /* Initialize the Socket for Remote Joystick Input */
-    Socket socket;
+    Socket socket(QUrl(QStringLiteral("ws://localhost:8080/ds")));
 
     /* Initialize the Joystick */
     // VirtualJoystick joystick;

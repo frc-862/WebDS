@@ -3,7 +3,6 @@
 
 
 #include <QKeyEvent>
-#include "SocketEvent.h"
 
 class RemoteJoystick : public QObject
 {
@@ -11,12 +10,11 @@ class RemoteJoystick : public QObject
 
 public:
     explicit RemoteJoystick();
+    static void updateAxes (float left, float right);
 
-private slots:
-    void updateAxes (float left, float right);
+private:
+    // static bool jsConfigured;
 
-protected:
-    bool eventFilter (QObject* object, QEvent* event);
 };
 
 #endif // REMOTEJOYSTICK_H

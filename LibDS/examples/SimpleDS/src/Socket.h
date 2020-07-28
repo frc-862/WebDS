@@ -7,25 +7,32 @@
 #include <QIODevice>
 #include <QEvent>
 #include <QApplication>
+#include <QtWebSockets/QWebSocket>
 
-#include "SocketEvent.h"
+#include "RemoteJoystick.h"
 
 class Socket : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Socket(QObject* parent = 0);
+    explicit Socket(const QUrl &url, QObject *parent = nullptr);
     ~Socket();
-    void onDisconnect();
+    // void onDisconnect();
 
-private slots:
-    void readJoystickData();
+Q_SIGNALS:
+    void closed();
 
+private Q_SLOTS:
+    void onConnected();
+    void onTextMessageReceived(QString message);
+    // void readJoystickData();
 
 private:
-    QTcpSocket* socket;
-    bool establishedConnection;
+    QWebSocket socket;
+    QUrl url;
+    // QTcpSocket* socket;
+    // bool establishedConnection;
 
 };
 
