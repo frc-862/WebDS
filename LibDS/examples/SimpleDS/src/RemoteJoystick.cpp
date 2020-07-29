@@ -19,10 +19,12 @@ RemoteJoystick::RemoteJoystick()
 
 void RemoteJoystick::updateAxes (float left, float right)
 {
-    // if(jsConfigured) {
-        /* Left Stick is Axis 1 */
-        DriverStation::getInstance()->setJoystickAxis(0, 1, left);
-        /* Right Stick is Axis 5 */
-        DriverStation::getInstance()->setJoystickAxis(0, 5, right);
-    // }
+    // qDebug() << "Left: " << left << " Right: " << right;
+    /* Left Stick is Axis 1 */
+    DriverStation::getInstance()->setJoystickAxis(0, 1, left);
+    /* Right Stick is Axis 5 */
+    DriverStation::getInstance()->setJoystickAxis(0, 5, right);
+    // QApplication::beep();
+    QString msg = QString("Left: %1  |  Right: %2").arg(left).arg(right);
+    emit DriverStation::getInstance()->newMessage(msg);
 }
