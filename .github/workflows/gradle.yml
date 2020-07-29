@@ -14,10 +14,10 @@ jobs:
     steps:
     - name: checkout repository
       uses: actions/checkout@v2
-    - name: config jdk 13
+    - name: config jdk 11
       uses: actions/setup-java@v1
       with:
-        java-version: 13
+        java-version: 11
     - name: permit build
       run: chmod +x ./WebDS/gradlew
     - name: execute build
