@@ -18,7 +18,6 @@ class Socket : public QObject
 public:
     explicit Socket(const QUrl &url, QObject *parent = nullptr);
     ~Socket();
-    // void onDisconnect();
 
 Q_SIGNALS:
     void closed();
@@ -26,13 +25,10 @@ Q_SIGNALS:
 private Q_SLOTS:
     void onConnected();
     void onTextMessageReceived(QString message);
-    // void readJoystickData();
 
 private:
     QWebSocket socket;
     QUrl url;
-    // QTcpSocket* socket;
-    // bool establishedConnection;
 
 };
 
