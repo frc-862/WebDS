@@ -2,28 +2,72 @@
 
 ![gradle build](https://github.com/frc-862/WebDS/workflows/gradle%20build/badge.svg)
 
-**IN PROGRESS**: web based driver station client for FRC
+**IN PROGRESS**: Web-based driver station client for FRC
 
 ## LibDS
 
 Clone of project [here](https://github.com/FRC-Utilities/LibDS).
 
-Sub-project `SimpleDS` has been modified and will be given ability to connect to server.
+Sub-project `SimpleDS` has been modified and will be given ability to connect to server and read joystick input from it.
 
 ### LibDS -> TODO
 
 - [ ] Test Test Test!
-- [ ] Build standalone executable
+- [X] Build executable
 - [X] Implement two-way communication to server
-- [X] Implement server
+- [X] Implement server client
 
 ### Building LibDS
 
-Qt
+Build with [CQtDeployer](https://github.com/QuasarApp/CQtDeployer).
+
+Useful documentation [here](https://github.com/QuasarApp/CQtDeployer/wiki/quickguide).
+
+**Linux:**
+
+Install CQtDeployer:
+
+```bash
+wget https://github.com/QuasarApp/CQtDeployer/releases/downloads/1.4.5/LinuxInstaller.run
+chmod +x LinuxInstaller.run
+./LinuxInstaller.run
+```
+
+Build Qt Application Binaries (from application directory):
+
+```bash
+make clean
+qmake -config release
+make
+```
+
+Make Run Script (from application directory):
+
+```bash
+cqtdeployer -bin SimpleDS
+```
+
+**Windows:**
+
+Install CQtDeployer [here](https://github.com/QuasarApp/CQtDeployer/releases/downloads/1.4.5/WindowsInstaller.run)
+
+Build Qt Application Binaries (from application directory):
+
+```bash
+nmake clean
+qmake -config release
+nmake
+```
+
+Make Run Script (from application directory):
+
+```bash
+cqtdeployer -bin SimpleDS.exe -qmake C:/Qt/<version>/min_gw/bin/qmake.exe
+```
 
 ## WebDS
 
-Spring web app.
+Spring Boot web application.
 
 ### WebDS -> TODO
 
@@ -33,14 +77,21 @@ Spring web app.
 
 ### Building WebDS
 
-build project with
+Build project with
 
 ```bash
 ./gradlew build
 ```
 
-deploy project locally with
+Deploy project locally with
 
 ```bash
 ./gradlew bootRun
 ```
+
+Compile deployable web resource with 
+
+```bash
+./gradlew bootWar
+```
+
