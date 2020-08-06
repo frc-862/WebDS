@@ -14,8 +14,6 @@ jobs:
         steps:
         - name: checkout repository
           uses: actions/checkout@v2
-        - name: enter driver station directory
-          uses: cd ./LibDS/examples/SimpleDS/
         - name: configure qt 5.15.0
           uses: jurplel/install-qt-action@v2
           with:
@@ -23,6 +21,6 @@ jobs:
         - name: clean
           uses: make clean
         - name: qmake in release mode
-          uses: qmake -config release
+          uses: qmake -config release LibDS/examples/SimpleDS/SimpleDS.pro
         - name: make
           uses: make
