@@ -1,6 +1,6 @@
 # Web-Based Driver Station
 
-![gradle build](https://github.com/frc-862/WebDS/workflows/gradle%20build/badge.svg)
+![gradle build](https://github.com/frc-862/WebDS/workflows/gradle%20build/badge.svg) ![qt build](https://github.com/frc-862/WebDS/workflows/qt%20build/badge.svg)
 
 **IN PROGRESS**: Web-based driver station client for FRC
 
