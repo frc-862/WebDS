@@ -82,7 +82,7 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
              ds,            SLOT (setCustomRobotAddress (QString)));
 
     /* Initialize the DS with the 2020 protocol */
-    ds->setProtocol (DriverStation::Protocol2020);
+    ds->setProtocol (DriverStation::Protocol2016);
 }
 
 /**
