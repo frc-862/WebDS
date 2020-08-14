@@ -51,7 +51,8 @@ SOURCES += \
     $$PWD/src/array.c \
     $$PWD/src/timer.c \
     $$PWD/src/queue.c \
-    $$PWD/src/string.c
+    $$PWD/src/string.c \
+    $$PWD/src/protocols/frc_2020.c
     
 include ($$PWD/lib/Socky/Socky.pri)
 

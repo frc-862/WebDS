@@ -81,8 +81,8 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
     connect (ui->RobotIP, SIGNAL (textChanged (QString)),
              ds,            SLOT (setCustomRobotAddress (QString)));
 
-    /* Initialize the DS with the 2016 protocol */
-    ds->setProtocol (DriverStation::Protocol2016);
+    /* Initialize the DS with the 2020 protocol */
+    ds->setProtocol (DriverStation::Protocol2020);
 }
 
 /**
