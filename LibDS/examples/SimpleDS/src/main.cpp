@@ -6,6 +6,7 @@
 #include "VirtualJoystick.h"
 #include "Socket.h"
 #include "RemoteJoystick.h"
+#include "OverrideListener.h"
 
 int main (int argc, char* argv[])
 {
@@ -14,12 +15,17 @@ int main (int argc, char* argv[])
     /* Initialize the Driver Station */
     DriverStation::getInstance()->start();
 
+    /* Initialize Override Listener for Disable/E-Stop Key Codes */
+    OverrideListener ol;
+    Q_UNUSED (ol);
+
     /* Initialize the Main Window */
     Window window;
     window.show();
 
     /* Initialize the Socket for Remote Joystick Input */
     Socket socket(QUrl(QStringLiteral("ws://192.168.25.245:8080/ds"))); // "ws://localhost:8080/ds"
+    Q_UNUSED (socket);
 
     /* Initialize the Joystick */
     // VirtualJoystick joystick;
