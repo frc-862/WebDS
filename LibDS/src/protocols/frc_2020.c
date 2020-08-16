@@ -51,7 +51,7 @@ DS_Protocol DS_GetProtocolFRC_2020 (void)
 
     /* Set protocol name */
     DS_StrRmBuf (&protocol.name);
-    protocol.name = DS_StrNew ("FRC 2016");
+    protocol.name = DS_StrNew ("FRC 2020");
 
     return protocol;
 }

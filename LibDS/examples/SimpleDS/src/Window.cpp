@@ -90,6 +90,7 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
  */
 Window::~Window()
 {
+    //DriverStation::getInstance()->quitDS();
     delete ui;
 }
 

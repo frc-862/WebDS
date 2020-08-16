@@ -8,6 +8,7 @@
 #include <QEvent>
 #include <QApplication>
 #include <QtWebSockets/QWebSocket>
+#include <DriverStation.h>
 
 #include "RemoteJoystick.h"
 
