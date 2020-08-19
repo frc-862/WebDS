@@ -13,6 +13,14 @@ Sub-project `SimpleDS` has been modified and will be given ability to connect to
 ### LibDS -> TODO
 
 - [ ] Test Test Test!
+- [ ] Resolve Buffer Overflow Error
+- [ ] Add Local Input Configuration
+- [ ] Rio Feedback/Logs to DS
+- [ ] Auto-retry on server connection
+- [ ] Multiple Driver Configuration
+- [X] Configure 2020 Protocol
+- [X] <Enter> to disable and <Space> to e-stop
+- [X] Write Build Script
 - [X] Build executable
 - [X] Implement two-way communication to server
 - [X] Implement server client
@@ -72,6 +80,10 @@ Spring Boot web application.
 ### WebDS -> TODO
 
 - [ ] Test Test Test!
+- [ ] Video Feedback via Youtube Live
+- [ ] Mutiple Robot Configuration
+- [ ] Add Security Features
+- [ ] Configure for web deployment
 - [X] Add Queueing system that only allows one websocket connection at a time
 - [X] Add ability for keyboard/usb joystick data to be sent to server
 
