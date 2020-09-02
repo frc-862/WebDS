@@ -55,6 +55,12 @@ Make Run Script (from application directory):
 cqtdeployer -bin SimpleDS
 ```
 
+Make installer (from application directory):
+
+```bash
+cqtdeployer -bin SimpleDS qif
+```
+
 **Windows:**
 
 Install CQtDeployer [here](https://github.com/QuasarApp/CQtDeployer/releases/downloads/1.4.5/WindowsInstaller.run)
