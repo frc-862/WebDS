@@ -61,6 +61,10 @@ Make installer (from application directory):
 cqtdeployer -bin SimpleDS qif
 ```
 
+All of the commands above are in `/LibDS/examples/SimpleDS/build.sh`
+
+Build script can be run with `-i` flag to generate installer.
+
 **Windows:**
 
 Install CQtDeployer [here](https://github.com/QuasarApp/CQtDeployer/releases/downloads/1.4.5/WindowsInstaller.run)
