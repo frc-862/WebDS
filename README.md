@@ -31,6 +31,8 @@ Build with [CQtDeployer](https://github.com/QuasarApp/CQtDeployer).
 
 Useful documentation [here](https://github.com/QuasarApp/CQtDeployer/wiki/quickguide).
 
+In addition to installing qt5, the project also requires the [qtwebsocket module](https://github.com/qt/qtwebsockets) as the application uses the WebSocket Protocol.
+
 **Linux:**
 
 Install CQtDeployer:
