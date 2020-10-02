@@ -244,3 +244,4 @@ gradle-app.setting
 
 **/bin/
 **/.settings/
+**/DistributionKit/
