@@ -78,7 +78,7 @@ cqtdeployer -bin LightningDS qif
 
 ##### Build Script
 
-`/DSClient/LightningDS/build.sh`
+`/DSClient/build.sh`
 
 Build script can be run with `-i` flag to generate installer.
 
@@ -97,12 +97,12 @@ nmake
 Make Run Script (from application directory):
 
 ```bash
-cqtdeployer -bin SimpleDS.exe -qmake C:/Qt/<version>/min_gw/bin/qmake.exe
+cqtdeployer -bin LightningDS.exe -qmake C:/Qt/<version>/min_gw/bin/qmake.exe
 ```
 
 ##### Build Script
 
-`/DSClient/LightningDS/build.bat`*
+`/DSClient/build.bat`*
 
 *Build script will not run `cqtdeployer`
 
