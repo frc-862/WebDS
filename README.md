@@ -3,7 +3,7 @@
 | CI | Build |
 |-|-|
 | `LibDS` | ![qt build](https://github.com/frc-862/WebDS/workflows/qt/badge.svg) |
-| `LightningDS` | ![qt build](https://github.com/frc-862/WebDS/workflows/qt%20build/badge.svg) |
+| `DSClient` | ![qt build](https://github.com/frc-862/WebDS/workflows/qt%20build/badge.svg) |
 | `WebDS` | ![gradle build](https://github.com/frc-862/WebDS/workflows/gradle%20build/badge.svg) |
 
 **IN PROGRESS**: Web-based driver station client for FRC
@@ -32,13 +32,13 @@ qmake -config release
 nmake
 ```
 
-## LightningDS
+## DSClient
 
 FRC Driver Station client able to interface with robots and remote input via WebDS (assumes robot is linked to internet-enabled network).
 
 ![LightningDS Screenshot](README/ds-client-screenshot-linux.png)
 
-### Building LightningDS
+### Building DSClient
 
 Build with [CQtDeployer](https://github.com/QuasarApp/CQtDeployer).
 
@@ -67,18 +67,18 @@ make
 Make Run Script (from application directory):
 
 ```bash
-cqtdeployer -bin SimpleDS
+cqtdeployer -bin LightningDS
 ```
 
 Make installer (from application directory):
 
 ```bash
-cqtdeployer -bin SimpleDS qif
+cqtdeployer -bin LightningDS qif
 ```
 
 ##### Build Script
 
-`/LightningDS/LightningDS/build.sh`
+`/DSClient/LightningDS/build.sh`
 
 Build script can be run with `-i` flag to generate installer.
 
@@ -102,7 +102,7 @@ cqtdeployer -bin SimpleDS.exe -qmake C:/Qt/<version>/min_gw/bin/qmake.exe
 
 ##### Build Script
 
-`/LightningDS/LightningDS/build.bat`*
+`/DSClient/LightningDS/build.bat`*
 
 *Build script will not run `cqtdeployer`
 
