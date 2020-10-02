@@ -86,7 +86,6 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
 
     /* Changes WebSocket address when user changes text */
     connect(ui->socketAddress, SIGNAL (textChanged (QString)),
-            //ds,            SLOT (setCustomRobotAddress (QString)));
             sh,                SLOT   (connectTo (QString)));
 
     /* Initialize the DS with the 2020 protocol */
