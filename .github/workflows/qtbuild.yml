@@ -1,4 +1,4 @@
-name: qt
+name: qt build
 
 on:
     push:
@@ -19,6 +19,6 @@ jobs:
           with:
             version: '5.15.0'
         - name: qmake in release mode
-          run: qmake -config release LibDS/LibDS.pro
+          run: qmake -config release LightningDS/LightningDS.pro
         - name: make
           run: make

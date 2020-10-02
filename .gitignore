@@ -245,5 +245,5 @@ gradle-app.setting
 **/bin/
 **/.settings/
 **/DistributionKit/
-**/.qmake.stash
-**/LightningDS
+LightningDS/.qmake.stash
+LightningDS/LightningDS

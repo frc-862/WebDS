@@ -1,39 +1,52 @@
 # Web-Based Driver Station
 
-![gradle build](https://github.com/frc-862/WebDS/workflows/gradle%20build/badge.svg) ![qt build](https://github.com/frc-862/WebDS/workflows/qt%20build/badge.svg)
+| CI | Build |
+|-|-|
+| `LibDS` | ![qt build](https://github.com/frc-862/WebDS/workflows/qt/badge.svg) |
+| `LightningDS` | ![qt build](https://github.com/frc-862/WebDS/workflows/qt%20build/badge.svg) |
+| `WebDS` | ![gradle build](https://github.com/frc-862/WebDS/workflows/gradle%20build/badge.svg) |
 
 **IN PROGRESS**: Web-based driver station client for FRC
 
 ## LibDS
 
-Clone of project [here](https://github.com/FRC-Utilities/LibDS).
+Library for interfacing with FRC robots.
 
-Sub-project `SimpleDS` has been modified and will be given ability to connect to server and read joystick input from it.
-
-### LibDS -> TODO
-
-- [ ] Test Test Test!
-- [ ] Resolve Buffer Overflow Error
-- [ ] Add Local Input Configuration
-- [ ] Rio Feedback/Logs to DS
-- [ ] Auto-retry on server connection
-- [ ] Multiple Driver Configuration
-- [X] Configure 2020 Protocol
-- [X] <Enter> to disable and <Space> to e-stop
-- [X] Write Build Script
-- [X] Build executable
-- [X] Implement two-way communication to server
-- [X] Implement server client
+Extension of project [here](https://github.com/FRC-Utilities/LibDS).
 
 ### Building LibDS
+
+#### Linux
+
+```bash
+make clean
+qmake -config release
+make
+```
+
+#### Windows
+
+```bash
+nmake -clean
+qmake -config release
+nmake
+```
+
+## LightningDS
+
+FRC Driver Station client able to interface with robots and remote input via WebDS (assumes robot is linked to internet-enabled network).
+
+![LightningDS Screenshot](README/ds-client-screenshot-linux.png)
+
+### Building LightningDS
 
 Build with [CQtDeployer](https://github.com/QuasarApp/CQtDeployer).
 
 Useful documentation [here](https://github.com/QuasarApp/CQtDeployer/wiki/quickguide).
 
-In addition to installing qt5, the project also requires the [qtwebsocket module](https://github.com/qt/qtwebsockets) as the application uses the WebSocket Protocol.
+In addition to installing qt5, the project also requires the [qtwebsocket module](https://github.com/qt/qtwebsockets) as the application uses the WebSocket Protocol to communicate with WebDS.
 
-**Linux:**
+#### Linux
 
 Install CQtDeployer:
 
@@ -63,11 +76,13 @@ Make installer (from application directory):
 cqtdeployer -bin SimpleDS qif
 ```
 
-All of the commands above are in `/LibDS/examples/SimpleDS/build.sh`
+##### Build Script
+
+`/LightningDS/LightningDS/build.sh`
 
 Build script can be run with `-i` flag to generate installer.
 
-**Windows:**
+#### Windows
 
 Install CQtDeployer [here](https://github.com/QuasarApp/CQtDeployer/releases/downloads/1.4.5/WindowsInstaller.run)
 
@@ -85,19 +100,15 @@ Make Run Script (from application directory):
 cqtdeployer -bin SimpleDS.exe -qmake C:/Qt/<version>/min_gw/bin/qmake.exe
 ```
 
+##### Build Script
+
+`/LightningDS/LightningDS/build.bat`*
+
+*Build script will not run `cqtdeployer`
+
 ## WebDS
 
-Spring Boot web application.
-
-### WebDS -> TODO
-
-- [ ] Test Test Test!
-- [ ] Video Feedback via Youtube Live
-- [ ] Mutiple Robot Configuration
-- [ ] Add Security Features
-- [ ] Configure for web deployment
-- [X] Add Queueing system that only allows one websocket connection at a time
-- [X] Add ability for keyboard/usb joystick data to be sent to server
+Spring Boot web application for relaying driver input and robot video feedback between a robot and a remote driver.
 
 ### Building WebDS
 
@@ -113,9 +124,8 @@ Deploy project locally with
 ./gradlew bootRun
 ```
 
-Compile deployable web resource with 
+Compile deployable web resource with
 
 ```bash
 ./gradlew bootWar
 ```
-

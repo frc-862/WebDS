@@ -2,7 +2,7 @@ name: gradle build
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, refactor ]
   pull_request:
     branches: [ master ]
 
