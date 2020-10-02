@@ -4,7 +4,7 @@
 
 #include "Window.h"
 #include "VirtualJoystick.h"
-#include "Socket.h"
+#include "SocketHandler.h"
 #include "RemoteJoystick.h"
 #include "OverrideListener.h"
 
@@ -24,8 +24,8 @@ int main (int argc, char* argv[])
     window.show();
 
     /* Initialize the Socket for Remote Joystick Input */
-    Socket socket(QUrl(QStringLiteral("ws://localhost:8080/ds"))); // "ws://localhost:8080/ds"
-    Q_UNUSED (socket);
+    // SocketHandler socketHandler(QUrl(QStringLiteral("ws://localhost:8080/ds"))); // "ws://localhost:8080/ds"
+    // Q_UNUSED (socketHandler);
 
     /* Initialize the Joystick */
     // VirtualJoystick joystick;

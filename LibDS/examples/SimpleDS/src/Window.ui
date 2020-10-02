@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>520</width>
-    <height>567</height>
+    <height>608</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,7 @@
       </property>
       <widget class="QWidget" name="MainTab">
        <attribute name="title">
-        <string>Main</string>
+        <string>DS</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
@@ -254,140 +254,37 @@
       </widget>
       <widget class="QWidget" name="JoysticksTab">
        <attribute name="title">
-        <string>Joysticks</string>
+        <string>I/O</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <item>
-         <widget class="QLabel" name="Joystick">
-          <property name="minimumSize">
-           <size>
-            <width>450</width>
-            <height>208</height>
-           </size>
+         <widget class="QGroupBox" name="connectionSettings">
+          <property name="title">
+           <string>Connection Settings</string>
           </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="pixmap">
-           <pixmap resource="../resources/resources.qrc">:/pixmaps/joystick.png</pixmap>
-          </property>
-          <property name="scaledContents">
-           <bool>false</bool>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTableWidget" name="Table">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="sizeAdjustPolicy">
-           <enum>QAbstractScrollArea::AdjustToContents</enum>
-          </property>
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>450</number>
-          </attribute>
-          <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>450</number>
-          </attribute>
-          <row>
-           <property name="text">
-            <string>Left Stick</string>
-           </property>
-          </row>
-          <row>
-           <property name="text">
-            <string>Right Stick</string>
-           </property>
-          </row>
-          <row>
-           <property name="text">
-            <string>A, B, X, Y</string>
-           </property>
-          </row>
-          <row>
-           <property name="text">
-            <string>Left Trigger</string>
-           </property>
-          </row>
-          <row>
-           <property name="text">
-            <string>Right Trigger</string>
-           </property>
-          </row>
-          <row>
-           <property name="text">
-            <string>Left Bumper</string>
-           </property>
-          </row>
-          <row>
-           <property name="text">
-            <string>Right Bumper</string>
-           </property>
-          </row>
-          <row>
-           <property name="text">
-            <string>D-Pad</string>
-           </property>
-          </row>
-          <column>
-           <property name="text">
-            <string>Keyboard Assignment</string>
-           </property>
-          </column>
-          <item row="0" column="0">
-           <property name="text">
-            <string>W,A,S,D</string>
-           </property>
-          </item>
-          <item row="1" column="0">
-           <property name="text">
-            <string>I,J,K,L</string>
-           </property>
-          </item>
-          <item row="2" column="0">
-           <property name="text">
-            <string>0,1,2,3</string>
-           </property>
-          </item>
-          <item row="3" column="0">
-           <property name="text">
-            <string>Q &amp; E</string>
-           </property>
-          </item>
-          <item row="4" column="0">
-           <property name="text">
-            <string>U &amp; O</string>
-           </property>
-          </item>
-          <item row="5" column="0">
-           <property name="text">
-            <string>4</string>
-           </property>
-          </item>
-          <item row="6" column="0">
-           <property name="text">
-            <string>5</string>
-           </property>
-          </item>
-          <item row="7" column="0">
-           <property name="text">
-            <string>Arrows</string>
-           </property>
-          </item>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="socketAddress">
+             <property name="placeholderText">
+              <string>ws://localhost:8080/ds</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="socketAddressLabel">
+             <property name="text">
+              <string>WebSocket</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>
       </widget>
       <widget class="QWidget" name="NetConsoleTab">
        <attribute name="title">
-        <string>NetConsole</string>
+        <string>Console</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
