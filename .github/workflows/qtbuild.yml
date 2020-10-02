@@ -18,7 +18,9 @@ jobs:
           uses: jurplel/install-qt-action@v2
           with:
             version: '5.15.0'
+        - name: change active directory
+          run: cd LightningDS/
         - name: qmake in release mode
-          run: qmake -config release LightningDS/LightningDS.pro
+          run: qmake -config release
         - name: make
           run: make
