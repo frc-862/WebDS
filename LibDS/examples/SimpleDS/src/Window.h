@@ -5,6 +5,7 @@
 #include <QApplication>
 
 #include "ui_Window.h"
+#include "SocketHandler.h"
 
 namespace Ui {
 class Window;
@@ -32,6 +33,7 @@ private slots:
 private:
     Ui::Window* ui;
     DriverStation* ds;
+    SocketHandler* sh;
 };
 
 #endif

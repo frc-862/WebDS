@@ -29,6 +29,9 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
     /* Get DriverStation instance */
     ds = DriverStation::getInstance();
 
+    /* Create Socket Instance */
+    sh = new SocketHandler(QUrl(QStringLiteral("ws://localhost:8080/ds")));
+
     /* Fill UI options */
     ui->Protocols->addItems (ds->protocols());
     ui->TeamStation->addItems (ds->stations());
@@ -80,6 +83,11 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
     /* Changes the robot IP when the user changes the robot IP text */
     connect (ui->RobotIP, SIGNAL (textChanged (QString)),
              ds,            SLOT (setCustomRobotAddress (QString)));
+
+    /* Changes WebSocket address when user changes text */
+    connect(ui->socketAddress, SIGNAL (textChanged (QString)),
+            //ds,            SLOT (setCustomRobotAddress (QString)));
+            sh,                SLOT   (connectTo (QString)));
 
     /* Initialize the DS with the 2020 protocol */
     ds->setProtocol (DriverStation::Protocol2020);

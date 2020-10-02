@@ -12,13 +12,13 @@
 
 #include "RemoteJoystick.h"
 
-class Socket : public QObject
+class SocketHandler : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit Socket(const QUrl &url, QObject *parent = nullptr);
-    ~Socket();
+    explicit SocketHandler(const QUrl &url, QObject *parent = nullptr);
+    ~SocketHandler();
 
 Q_SIGNALS:
     void closed();
@@ -26,6 +26,7 @@ Q_SIGNALS:
 private Q_SLOTS:
     void onConnected();
     void onTextMessageReceived(QString message);
+    void connectTo(const QString &url);
 
 private:
     QWebSocket socket;

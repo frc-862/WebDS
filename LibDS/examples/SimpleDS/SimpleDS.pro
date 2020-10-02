@@ -11,17 +11,17 @@ TARGET = SimpleDS
 HEADERS += \
   $$PWD/src/Window.h \
   $$PWD/src/VirtualJoystick.h \
-    src/Socket.h \
     src/RemoteJoystick.h \
-    src/OverrideListener.h
+    src/OverrideListener.h \
+    src/SocketHandler.h
 
 SOURCES += \
   $$PWD/src/main.cpp \
   $$PWD/src/Window.cpp \
   $$PWD/src/VirtualJoystick.cpp \
-    src/Socket.cpp \
     src/RemoteJoystick.cpp \
-    src/OverrideListener.cpp
+    src/OverrideListener.cpp \
+    src/SocketHandler.cpp
 
 FORMS += \
   $$PWD/src/Window.ui
