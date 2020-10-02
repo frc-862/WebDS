@@ -20,7 +20,9 @@ jobs:
             version: '5.15.0'
         - name: change active directory
           run: cd LightningDS/
+        - name: directory
+          run: pwd
         - name: qmake in release mode
-          run: qmake -config release ./LightningDS.pro
+          run: qmake -config release LightningDS.pro
         - name: make
           run: make
