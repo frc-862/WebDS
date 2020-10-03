@@ -1,4 +1,4 @@
-name: qt build
+name: qt
 
 on:
     push:
@@ -19,6 +19,6 @@ jobs:
           with:
             version: '5.15.0'
         - name: qmake in release mode
-          run: qmake -config release LibDS/examples/SimpleDS/SimpleDS.pro
+          run: qmake -config release LibDS/LibDS.pro
         - name: make
           run: make

@@ -1,0 +1,24 @@
+name: qt build
+
+on:
+    push:
+        branches: [ master ]
+    pull_request:
+        branches: [ master ]
+
+jobs:
+    build:
+
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: checkout repository
+          uses: actions/checkout@v2
+        - name: configure qt 5.15.0
+          uses: jurplel/install-qt-action@v2
+          with:
+            version: '5.15.0'
+        - name: qmake in release mode
+          run: qmake -config release DSClient/LightningDS.pro
+        - name: make
+          run: make
