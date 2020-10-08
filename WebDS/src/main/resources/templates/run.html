@@ -52,12 +52,29 @@
     <body>
         <div class="container">
             <div class="py-5 text-center">
+                 <!--
                 <img
                     alt="Lightning Robotics"
                     src="/images/lightning.png"
                     style="max-width: 60%;"
                 />
                 <h2>Remote Operators Console</h2>
+                -->
+                <!-- Add a placeholder for the Twitch embed -->
+                <div id="twitch-embed"></div>
+
+                <!-- Load the Twitch embed script -->
+                <script src="https://player.twitch.tv/js/embed/v1.js"></script>
+
+                <!-- Create a Twitch.Player object. This will render within the placeholder div -->
+                <script type="text/javascript">
+                    new Twitch.Embed("twitch-embed", {
+                        height: "100%", // Why does this not work???
+                        width: "100%",
+                        channel: "dreamwastaken"
+                    });
+                </script>
+
             </div>
             <div class="row">
                 <div class="col-md-6">
