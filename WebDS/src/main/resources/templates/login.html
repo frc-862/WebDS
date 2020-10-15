@@ -1,11 +1,15 @@
 <!DOCTYPE html>
+<meta name="google-signin-client_id" content="365631867288-m7q9boog1vgsp7dbalv2uil95cjm0j25.apps.googleusercontent.com">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      <div class="g-signin2" data-onsuccess="onSignIn"></div>
+      
     <head>
-        <title>Lightning Robotics</title>
-        <th:block th:include="fragments/common.html :: headerfiles"></th:block>
+            <title>Lightning Robotics</title>
+            <th:block th:include="fragments/common.html :: headerfiles"></th:block>
     </head>
     <body>
+        <div id = "yes">jnhbgvfcjgvkbhj</div>
         <div th:if="${param.error}">
             Invalid username and password.
         </div>
@@ -16,6 +20,26 @@
             <div style = "margin:auto;"><label> User Name : <input type="text" name="username"/> </label></div>
             <div style = "margin:auto;"><label> Password: <input type="password" name="password"/> </label></div>
             <div style = "margin:auto; background-color: orange;"><input type="submit" value="Sign In"/></div>
-        </form>
+            </form>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
+        <script>
+            function onSignIn(googleUser) {
+                var testspan = document.getElementById("yes");
+              // Useful data for your client-side scripts:
+              var profile = googleUser.getBasicProfile();
+              testspan.innerHTML = "loren ipsm";
+              testspan.innerHTML = profile.getId();
+              window.alert("ID: " + profile.getId()); // Don't send this directly to your server!
+              Console.log('Full Name: ' + profile.getName());
+              console.log('Given Name: ' + profile.getGivenName());
+              document.write('Family Name: ' + profile.getFamilyName());
+              document.write("Image URL: " + profile.getImageUrl());
+              document.write("Email: " + profile.getEmail());
+      
+              // The ID token you need to pass to your backend:
+              var id_token = googleUser.getAuthResponse().id_token;
+              console.log("ID Token: " + id_token);
+            }
+          </script>
     </body>
 </html>
