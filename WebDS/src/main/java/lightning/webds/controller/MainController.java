@@ -14,6 +14,14 @@ public class MainController {
         return "closed";
     }
 
+    @RequestMapping("/twitch")
+    public String getTwitchPage(){
+        return "twitch";
+    }
+    @RequestMapping("/login")
+    public String getLoginPage(){
+        return "login";
+    }
     @RequestMapping("/run")
     public String getRunPage() {
         return "run";
