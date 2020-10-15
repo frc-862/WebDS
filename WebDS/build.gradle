@@ -23,6 +23,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.webjars:bootstrap:4.4.1'
 	implementation 'org.webjars:jquery:3.4.1'
 	compileOnly 'org.projectlombok:lombok'

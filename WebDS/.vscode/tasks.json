@@ -1,0 +1,26 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "gradle",
+			"id": "c:\\Users\\zimin\\Downloads\\Game Design\\WebDS\\WebDSbuildwebds",
+			"script": "build",
+			"description": "Assembles and tests this project.",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"project": "webds",
+			"buildFile": "C:\\Users\\zimin\\Downloads\\Game Design\\WebDS\\WebDS\\build.gradle",
+			"rootProject": "webds",
+			"projectFolder": "c:\\Users\\zimin\\Downloads\\Game Design\\WebDS\\WebDS",
+			"workspaceFolder": "c:\\Users\\zimin\\Downloads\\Game Design\\WebDS\\WebDS",
+			"args": "",
+			"javaDebug": false,
+			"problemMatcher": [
+				"$gradle"
+			],
+			"label": "gradle: build"
+		}
+	]
+}

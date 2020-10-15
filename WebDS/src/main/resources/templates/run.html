@@ -61,21 +61,7 @@
                 <h2>Remote Operators Console</h2>
                 -->
                 <!-- Add a placeholder for the Twitch embed -->
-                <div id="twitch-embed"></div>
 
-                <!-- Load the Twitch embed script -->
-                <script src="https://player.twitch.tv/js/embed/v1.js"></script>
-
-                <!-- Create a Twitch.Player object. This will render within the placeholder div -->
-                <script type="text/javascript">
-                    new Twitch.Embed("twitch-embed", {
-                        height: "100%", // Why does this not work???
-                        width: "100%",
-                        channel: "ggghosty05x" // Nicks Twitch
-                    });
-                </script>
-
-            </div>
             <div class="row">
                 <div class="col-md-6">
                     <h4>Input Configuration</h4>
@@ -102,7 +88,21 @@
                     <div id="console"></div>
                 </div>
             </div>
+            <div id="twitch-embed"></div>
+
+            <!-- Load the Twitch embed script -->
+            <script src="https://player.twitch.tv/js/embed/v1.js"></script>
+
+            <!-- Create a Twitch.Player object. This will render within the placeholder div -->
+            <script type="text/javascript">
+                new Twitch.Embed("twitch-embed", {
+                    height: "100%", // Why does this not work???
+                    width: "100%",
+                    channel: "ggghosty05x" // Nicks Twitch
+                });
+            </script>
         </div>
+    </div>
 
         <script>
             var dbg = document.getElementById("dbg");
