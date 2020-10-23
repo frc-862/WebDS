@@ -6,11 +6,14 @@ public class User {
     
     private String email;
 
+    private String role;
+
     public User() {}
 
-    public User(String name, String email) {
+    public User(String name, String email, String role) {
         this.name = name;
         this.email = email;
+        this.role = role;
     }
 
     public String getName() {
@@ -29,4 +32,7 @@ public class User {
         this.email = email;
     }
 
+    public String getRole(){
+        return role;
+    }
 }

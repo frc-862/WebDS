@@ -24,7 +24,7 @@ public class WaitingRoom {
 
     public User getNext() {
         if(!line.isEmpty()) return line.poll();
-        return new User("No Users In Waiting Room", ":(");
+        return new User("No Users In Waiting Room", ":(","X");
     }
 
     public int getSize() {
