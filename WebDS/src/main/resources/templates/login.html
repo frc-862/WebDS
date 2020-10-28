@@ -72,7 +72,7 @@
                 setTimeout(() => {
                     document.getElementById("form_user").value = sessionEmail;
                     document.getElementById("form_pw").value = "password";      
-                document.getElementById("form_submit").submit();}, 500 );  
+                document.getElementById("form_submit").submit();}, 500 ); 
             }
 
             function setUserData(email, name){
@@ -80,7 +80,7 @@
                     {
                         type : "POST",
                         contentType : "application/json",
-                        url: "http://localhost:8080/admin", // temporary URL
+                        url: "http://localhost:8080/redirect", // temporary URL
                         data: JSON.stringify({"name":name, "email":email}),
                         timeout : 100000,
                         success : function (data){

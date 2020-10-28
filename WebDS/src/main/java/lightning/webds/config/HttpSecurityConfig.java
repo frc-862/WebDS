@@ -5,6 +5,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
+import lightning.webds.handler.AuthSuccessHandler;
 import lightning.webds.handler.DriverSocketHandler;
 import lightning.webds.handler.WaitingSocketHandler;
 import lightning.webds.service.UserService;
@@ -31,6 +32,9 @@ public class HttpSecurityConfig extends WebSecurityConfigurerAdapter {
 	public static final String user_role = "USER";
 	public static final String admin_role = "ADMIN";
 
+	private AuthSuccessHandler getSuccessHandler(){
+		return new AuthSuccessHandler();
+	}
 	private UserInfo getUserDetailsService(){
 		return new UserInfo();
 	}
@@ -44,11 +48,13 @@ public class HttpSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-				.antMatchers("/admin").access("hasRole('" + admin_role + "')")
+				.antMatchers("/admin/*").access("hasRole('" + admin_role + "')")
 				.antMatchers("/").access("hasRole('" + admin_role + "') or hasRole('" + user_role + "')")
+				.antMatchers("/user/*").access("hasRole('" + admin_role + "') or hasRole('" + user_role + "')")
 				.and()
 			.formLogin()
 				.loginPage("/login")
+				.successHandler(getSuccessHandler())
 				.permitAll()
 				.and()
 			.logout()

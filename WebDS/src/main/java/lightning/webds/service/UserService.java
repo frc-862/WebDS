@@ -10,11 +10,13 @@ import java.util.List;
 
 @Service
 public class UserService {
+    // temporary: need database on server
     private HashMap<String, User> userMap = new HashMap<String, User>(){
         {
         put("ziming412@gmail.com", new User("Ziming Huang", "ziming412@gmail.com", "USER"));
         put("zhuang412@pccsk12.com", new User("Ziming zzstu Huang", "zhuang412@pccsk12.com", "ADMIN"));
         }
+
     };
 
     public User findUserByEmail(String email){
@@ -27,5 +29,9 @@ public class UserService {
 
     public void addUser(User user){
         userMap.put(user.getEmail(), user);
+    }
+
+    public Boolean userExist(String email){
+        return userMap.containsKey(email);
     }
 }

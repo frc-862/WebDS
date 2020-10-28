@@ -9,7 +9,9 @@ import java.util.Map;
 import java.lang.Object;
 import java.lang.invoke.ConstantBootstraps;
 import java.util.HashMap;
-import org.springframework.http.MediaType;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,11 +25,25 @@ public class MainController {
     private static boolean qOpen = false;
 
     @RequestMapping("/")
-    public String getMainPage() {
-        if(qOpen) return "index";
-        return "closed";
+    public String getMainPage(){
+        return "twitch";
+    }
+    @RequestMapping("/user/{email}")
+    public String getUserPage(@PathVariable String email) {
+        if(UserInfo.userService.userExist(email)){
+            if(qOpen) return "index.html";
+            return "closed.html";
+        }
+        return "thanks";
     }
 
+    @RequestMapping(value = "/admin/{email}")
+    public String getAdminPage(@PathVariable String email){
+        if(UserInfo.userService.userExist(email)){
+            return "admin";
+        }
+        return "thanks";
+    }
     @RequestMapping("/twitch")
     public String getTwitchPage(){
         return "twitch";
@@ -37,25 +53,28 @@ public class MainController {
     public String getLoginPage(){
         return "login";
     }
-
-    @RequestMapping(value = "/admin", method = RequestMethod.POST, consumes = {"application/json"})
-    public String getUser(@RequestBody User user){
-        var userDetails = UserInfo.userService.findUserByEmail(user.getEmail());
-        var role = userDetails.getRole();
-
-        if(role ==  HttpSecurityConfig.admin_role){return "admin";}
-        else if(qOpen){return "index";}
-        return "closed";
+    private User userDetails;
+    @RequestMapping(value = "/redirect", method = RequestMethod.GET)
+    public String getRedirectPage(){
+    System.out.print("page redirected");
+    var role = userDetails.getRole();
+    var email = userDetails.getEmail();
+    if(role ==  HttpSecurityConfig.admin_role){    System.out.println("admin redirected"); return "redirect:/admin/" + email;}
+    else if(qOpen){   System.out.println("open redirected"); return "redirect:/user/" + email;}
+    System.out.println("closed redirected"); 
+    return "redirect:/user/" + email;
     }
+    @RequestMapping(value = "/redirect", method = RequestMethod.POST, consumes = {"application/json"})
+    public String getRedirectJSON(@RequestBody User user){
+        userDetails = UserInfo.userService.findUserByEmail(user.getEmail());
+       return "thanks";
+    }
+
     @RequestMapping("/run")
     public String getRunPage() {
         return "run";
     }
 
-    @RequestMapping("/admin")
-    public String getAdminPage() {
-        return "admin";
-    }
 
     @RequestMapping("/thx")
     public String getEndPage() {
