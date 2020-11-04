@@ -24,7 +24,6 @@ public class UserInfo implements UserDetailsService{
             .password("password")
             .roles(user.getRole())
             .build();
-            
         }
         throw new UsernameNotFoundException("User not found.");
     }

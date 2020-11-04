@@ -15,8 +15,8 @@ public class UserService {
         {
         put("ziming412@gmail.com", new User("Ziming Huang", "ziming412@gmail.com", "USER"));
         put("zhuang412@pccsk12.com", new User("Ziming zzstu Huang", "zhuang412@pccsk12.com", "ADMIN"));
+        put("ftgeib640@pcck12.com", new User("Frederick zzstu Geib", "ftgeib640@pcck12.com", "ADMIN"));
         }
-
     };
 
     public User findUserByEmail(String email){
