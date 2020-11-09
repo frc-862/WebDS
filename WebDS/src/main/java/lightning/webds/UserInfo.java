@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class UserInfo implements UserDetailsService{
 
     public static UserService userService = new UserService();
+
+    // called by Spring to get user info
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findUser(username);
@@ -28,6 +30,7 @@ public class UserInfo implements UserDetailsService{
         throw new UsernameNotFoundException("User not found.");
     }
 
+    // find user from UserService class
     private User findUser(String email){
         return userService.findUserByEmail(email);
     }

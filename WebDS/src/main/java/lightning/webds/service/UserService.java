@@ -1,8 +1,12 @@
 package lightning.webds.service;
 
 import java.util.HashMap;
+
+import lightning.webds.controller.MainController;
 import lightning.webds.entity.User;
 
+import org.springframework.messaging.support.ExecutorSubscribableChannel;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.util.ArrayList;
@@ -10,7 +14,9 @@ import java.util.List;
 
 @Service
 public class UserService {
-    // temporary: need database on server
+
+    private SimpMessagingTemplate simpMessagingTemplate = new SimpMessagingTemplate(new ExecutorSubscribableChannel());
+    //TODO: temporary database. need database on server
     private HashMap<String, User> userMap = new HashMap<String, User>(){
         {
         put("ziming412@gmail.com", new User("Ziming Huang", "ziming412@gmail.com", "USER"));
@@ -19,6 +25,7 @@ public class UserService {
         }
     };
 
+    // using temporary database. need database on server
     public User findUserByEmail(String email){
         var user = userMap.get(email);
         if(user == null){
@@ -33,5 +40,15 @@ public class UserService {
 
     public Boolean userExist(String email){
         return userMap.containsKey(email);
+    }
+
+    public void connectUserToAdmin(String email, String role){
+        simpMessagingTemplate.convertAndSend("/admin/" + MainController.getAdminEmail(),
+        "message");
+        System.out.println(email);
+    }
+
+    public HashMap getUserMap(){
+        return userMap;
     }
 }

@@ -38,15 +38,16 @@
                     /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/wait}]]*/ "ws://localhost:8080/wait";
                 /*]]>*/
                 ws = new WebSocket(url);
+                var email = window.location.pathname.replace('/user/', '');
                 ws.onopen = function () {
                     showBroadcastMessage('<div class="alert alert-success">Connected -> Pending Robot Availibility</div>');
-                    ws.send('ADD');
+                    ws.send('ADD ' + email);
                 };
                 ws.onmessage = function (data) {
                     var msg = data.data;
                     showBroadcastMessage(createTextNode(msg));
                     if(msg == 'URNEXT') {
-                        ws.send('USRLEAV');
+                        ws.send('USRLEAV ' + email);
                         window.location.href='/run';
                         ws.close();
                     }

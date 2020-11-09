@@ -3,7 +3,7 @@ package lightning.webds.handler;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
+import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.CloseStatus;
@@ -18,6 +18,8 @@ public class WaitingSocketHandler extends TextWebSocketHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(WaitingSocketHandler.class);
     
     private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+
+    private final ConcurrentHashMap<String,WebSocketSession> sessionMaps = new ConcurrentHashMap<String,WebSocketSession>();
 
     private WebSocketSession admin = null;
  
@@ -37,13 +39,18 @@ public class WaitingSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         super.handleTextMessage(session, message);
         String msg = message.getPayload();
+        String[] msgSplit = msg.split(" ");
         if(msg.equals("IAMADMIN")) {
             admin = session;
             sessions.remove(session);
             //admin.sendMessage(new TextMessage("Admin Configured"));
-        } else if(msg.equals("ADD")) {
-            if(admin != null && admin.isOpen()) {
+        } else if(msgSplit[0].equals("ADD")) {
+            System.out.println(MainController.isQueueOpen());
+            if(admin != null && admin.isOpen() && MainController.isQueueOpen()) {
+                // send message to admin to add user to queue
                 admin.sendMessage(new TextMessage("+"));
+                var email = msgSplit[1];
+                sessionMaps.put(email, session);
             }
         } else if(msg.equals("OPENQ")) {
             MainController.openQueue();
@@ -53,16 +60,22 @@ public class WaitingSocketHandler extends TextWebSocketHandler {
             if(admin.isOpen()) admin.sendMessage(new TextMessage("Queue Is Closed"));
         } else if(msg.equals("ADMINDIED")) {
             admin = null;
-        } else if(msg.equals("USRLEAV")) {
+        } else if(msgSplit[0].equals("USRLEAV")) {
+            // send message to admin to allow user to enter and remove user from queue
             if(admin != null && admin.isOpen()) {
-                //admin.sendMessage(new TextMessage("-"));
+                var email = msgSplit[1];
+                admin.sendMessage(new TextMessage("- " + email));
             }
-        } else if(msg.equals("NEXT")) {
+        } else if(msgSplit[0].equals("NEXT")) {
             //admin.sendMessage(new TextMessage(""));
-            if(!sessions.isEmpty()) {
-                WebSocketSession next = sessions.remove(0);
-                next.sendMessage(new TextMessage("URNEXT"));
-                next.close();
+            if(!sessionMaps.isEmpty()) {
+                // send message to user to confirm activity
+                var email = msgSplit[1];
+                if(sessionMaps.containsKey(email)){
+                    WebSocketSession next = sessionMaps.get(email);
+                    next.sendMessage(new TextMessage("URNEXT"));
+                    sessionMaps.remove(email);
+                }
             } else {
                 if(admin != null) {
                     admin.sendMessage(new TextMessage("Queue Is Empty"));

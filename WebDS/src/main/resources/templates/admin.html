@@ -7,12 +7,41 @@
     </head>
     <body>
 
-        <div class="container">
+        <div class="container-fluid">
             <div class="py-5 text-center">
                 <h2>Remote Operators Admin Console</h2>
             </div>
             <div class="row">
-                <div class="col-md-6">
+                <div class = "col-4">
+                    <div class="py-5 text-center">
+                        <h4>User Status</h4>                
+                    </div>
+                    <!-- Needs beautifying -->
+                    <div class = "row mb-2"> 
+                        <label for = "email"> Email: </label>
+                        <input type="text" name="email" id = "adduser_email" style = "width: 90%;"> </input>
+                    </div>
+                    <div class = "row mb-2">
+                        <label for = "role"> Role: </label>
+                        <select name="role" id="adduser_role">
+                            <option value="USER">User</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
+                    </div>
+                    <div class = "row mb-2">
+                       <button class = "btn btn-primary" onclick = "addUser('','');"> Add </button>
+                    </div>
+                    <table class = "row mb-3" style = "border:2px solid black;  width: 100%; border-collapse: collapse;">
+                        <tbody id = "usertable"><tr>
+                            <th class = "popup" style = "width: 70%;"> Users </th>
+                            <th class = "popup" style = "width: 15%;"> Role </th>
+                            <th class = "popup" style = "width: 15%;"> Status </th>
+                        </tr></tbody>
+                    </table>
+                    <!--End beautifying-->
+                </div>
+
+                <div class="col-4">
                     <div class="py-5 text-center">
                         <h4>Queue Console</h4>                
                     </div>
@@ -69,13 +98,17 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <button
+                        <!--<button
                         id="inv"
                         class="btn btn-primary"
                         onclick="inviteNext()"
                         >
                             Invite Next
-                        </button>
+                        </button>-->
+                        <table style = "border:2px solid black;  width: 60%; border-collapse: collapse;">
+                            <tbody id = "invite_form" ><tr><th> Queue </th>
+                            </tr></tbody>
+                        </table>
                     </div>
                     <!--
                     <div class="row mb-3">
@@ -92,7 +125,8 @@
                         <div id="waitconsole"></div>
                     </div>
                 </div>
-                <div class="col-md-6">
+               
+                <div class="col-4">
                     <div class="py-5 text-center">
                         <h4>Driver Console</h4>                
                     </div>
@@ -194,9 +228,8 @@
                 </div>
             </div>
         </div>
-
+        
         <script>
-
             function clear(id) {
                 var d;
                 if(id == 'drivec') {
@@ -206,7 +239,7 @@
                 }
                 d.innerHTML = '';
             }
-
+           
             var queueSize = 0;
 
             // NOTE - DRIVER
@@ -220,6 +253,7 @@
                 dws.onopen = function () {
                     showBroadcastMessageD('<div class="alert alert-success">Connected to Driver Socket</div>');
                     dws.send('IAMADMIN');
+                    dws.send('REQUESTUSER');
                 };
                 dws.onclose = function () {
                     dws.send('ADMINDIED');
@@ -227,9 +261,23 @@
                 }
                 dws.onmessage = function (data) {
                     var msg = data.data;
+                    var msgSplit = msg.split(" ");
                     if(msg =='-') {
                         queueSize -= 1;
                         drawQueue();
+                    } else if(msgSplit[0] == '@'){
+                        // receive status change- OFFLINE, ONLINE, or WAITING
+                        // msgSplit[1] = email,  msgSplit[2] = role, msgSplit[3] = status
+                        updateUser(msgSplit[1], msgSplit[3]);
+                        if(msgSplit[2] == "USER"){
+                            addUserToQueue(msgSplit[1], msgSplit[2]);
+                        }
+                    } else if(msgSplit[0] == '#'){
+                        // Adding user to User Status Log.
+                        // msgSplit[1] = email,  msgSplit[2] = role
+                        addUser(msgSplit[1], msgSplit[2]);
+                    } else if(msg == "USERERROR"){
+                        window.alert("Error adding user: make sure all field is complete.");
                     } else {
                         showBroadcastMessageD(createTextNode(msg));
                     }
@@ -289,8 +337,14 @@
                 }
                 ws.onmessage = function (data) {
                     var msg = data.data;
-                    if(msg == '+') {
+                    var msgSplit = msg.split(" ");
+                    if(msgSplit[0] == '+') {
                         queueSize += 1;
+                        drawQueue();
+                    }  else if(msgSplit[0] == '-'){
+                        queueSize -= 1;
+                        var email = msgSplit[1];
+                        updateUser(email, "ONLINE");
                         drawQueue();
                     } else {
                         showBroadcastMessage(createTextNode(msg));
@@ -319,8 +373,11 @@
                 return '<div class="alert alert-info">' + msg + "</div>";
             }
 
+            var inviteList = document.getElementById("invite_form");
             function inviteNext() {
-                ws.send('NEXT');
+                var inviteForm = inviteList.parentNode;
+                if(inviteForm.style.visibility == "visible"){inviteForm.style.visibility = "hidden";}
+                else{ inviteForm.style.visibility = "visible";}
             }
 
             function openQueue() {
@@ -350,6 +407,57 @@
 
             window.onload = connectall();
 
+            function addUserToQueue(email, role){
+                var row = inviteList.insertRow();
+                var emailCell = row.insertCell();
+                var inviteCell = row.insertCell();
+
+                var inviteButton = document.createElement("button");
+                inviteButton.innerHTML = "invite";
+                inviteButton.className = "btn btn-sm btn-outline-secondary";
+                inviteButton.onclick = function()
+                {
+                    ws.send("NEXT " + email);
+                    removeUserFromQueue(inviteButton);
+                };
+                emailCell.innerHTML = email;
+                inviteCell.appendChild(inviteButton);
+            }
+
+            function removeUserFromQueue(buttonElement){
+                var row = buttonElement.parentNode.parentNode;
+                inviteList.removeChild(row);
+            }
+
+            function addUser(email, role){
+                var table = document.getElementById("usertable");
+                var row = table.insertRow();
+                row.id = email;
+                var emailCell = row.insertCell();
+                var roleCell = row.insertCell();
+                var statusCell = row.insertCell();
+                
+                if(email == ""){
+                    email = document.getElementById("adduser_email").value;
+                    role = document.getElementById("adduser_role").value;
+                }
+                emailCell.innerHTML = email;
+                roleCell.innerHTML = role;
+                statusCell.innerHTML = "OFFLINE";
+
+                dws.send("@ " + email + " " + role);
+            }
+
+            function updateUser(email, status){
+                var table = document.getElementById("usertable");
+                for(i = 0; i < table.childNodes.length; i ++){
+                    if(table.childNodes[i].id == email){
+                        var row = table.childNodes[i];
+                        row.childNodes[2].innerHTML = status;
+                        break;
+                    }
+                }
+            }
         </script>
         
     </body>
