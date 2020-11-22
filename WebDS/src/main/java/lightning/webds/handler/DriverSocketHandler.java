@@ -107,17 +107,19 @@ public class DriverSocketHandler extends TextWebSocketHandler {
                 driver.sendMessage(new TextMessage("LEAVE"));
             }
         } else if(msg.equals("REQUESTUSER")){
-            var userMap = UserInfo.userService.getUserMap();
-            for(var user : userMap.keySet()){
-                User userInfo = (User)userMap.get(user);
-                admin.sendMessage(new TextMessage("# " + user.toString() + " " + userInfo.getRole()));
+            var userMap = UserInfo.userService.getAllUser();
+            for(var user : userMap){
+                admin.sendMessage(new TextMessage("# " + user.getEmail() + " " + user.getRole()));
             }
             sendMessageToAdmin(MainController.getAdminEmail(), "ADMIN", "ONLINE");
-        } else if(msg.startsWith("@")){ // Add user to server
+        }else if(msg.split(" ")[0].equals("REMOVEUSER")){
+            var msgSplit = msg.split(" ");
+            sendMessageToAdmin(msgSplit[1], "@",  "OFFLINE");
+        } else if(msg.startsWith("@")){ // Add user to server database
             var info = msg.split(" ");
             // TODO: temporary: need to add to realtime database
             if(info.length > 2){
-                UserInfo.userService.addUser(new User("", info[1], info[2]));
+                UserInfo.userService.updateUser(new User("", info[1], info[2]));
             }
             else{
                 admin.sendMessage(new TextMessage("USERERROR"));
@@ -134,7 +136,7 @@ public class DriverSocketHandler extends TextWebSocketHandler {
     }
 
     public static void sendMessageToAdmin(String email, String role, String status) throws Exception{
-        if(admin != null && admin.isOpen()){
+        if(admin != null && admin.isOpen()){ // update user status
             admin.sendMessage(new TextMessage("@ " + email + " " + role + " " + status));
         }
     }

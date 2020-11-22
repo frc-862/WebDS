@@ -48,7 +48,7 @@
                     showBroadcastMessage(createTextNode(msg));
                     if(msg == 'URNEXT') {
                         ws.send('USRLEAV ' + email);
-                        window.location.href='/run';
+                        window.location.href='/run/' + email;
                         ws.close();
                     }
                 };
@@ -58,6 +58,7 @@
             }
 
             window.onload = connect();
+            window.onunload = connect();
 
             function showBroadcastMessage(message) {
                 $("#console").html($("#console").html() + message);

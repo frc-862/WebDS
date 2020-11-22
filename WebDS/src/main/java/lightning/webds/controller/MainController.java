@@ -9,6 +9,7 @@ import lightning.webds.service.UserService;
 import java.util.Map;
 import java.lang.Object;
 import java.lang.invoke.ConstantBootstraps;
+import java.util.concurrent.ExecutionException;
 import java.util.HashMap;
 
 import org.springframework.http.HttpStatus;
@@ -38,8 +39,10 @@ public class MainController {
     public String getUserPage(@PathVariable String email)  throws Exception {
         // if user exists, direct to queue
         if(UserInfo.userService.userExist(email)){
-            DriverSocketHandler.sendMessageToAdmin(email, "USER", "WAITING");
-            if(qOpen) return "wait.html";
+            if(qOpen){
+                DriverSocketHandler.sendMessageToAdmin(email, "USER", "WAITING");
+                return "wait.html";
+            }
             return "closed.html";
         }
         return "redirect:/error";
@@ -49,6 +52,7 @@ public class MainController {
     public String getAdminPage(@PathVariable String email){
         if(UserInfo.userService.userExist(email)){
             // allow only 1 admin
+            System.out.println("email " + email + "id " + adminID);
             if(!adminExists || adminID.equals(email)){
                 adminExists = true;
                 adminID = email;
@@ -72,25 +76,28 @@ public class MainController {
 
     @RequestMapping(value = "/redirect", method = RequestMethod.GET)
     public String getRedirectPage(){
-        var role = userDetails.getRole();
+        var role = userDetails.getRole().stripTrailing().stripLeading();
         var email = userDetails.getEmail();
 
         // redirect user based on role
-        
-        if(role ==  HttpSecurityConfig.admin_role){ return "redirect:/admin/" + email;}
+        if(role.equals(HttpSecurityConfig.admin_role)){ return "redirect:/admin/" + email;}
         else if(qOpen){
          return "redirect:/user/" + email;}
         
         return "redirect:/user/" + email;
     }
 
-    @RequestMapping(value = "/redirect", method = RequestMethod.POST, consumes = {"application/json"})
+    @RequestMapping(value = "/redirect/info", method = RequestMethod.POST, consumes = {"application/json"})
     public String getRedirectJSON(@RequestBody User user){
-        userDetails = UserInfo.userService.findUserByEmail(user.getEmail());
+        try{
+        userDetails = UserInfo.userService.getUserDetails(user.getEmail());
+        }
+        catch(InterruptedException in){}
+        catch(ExecutionException ex){}
        return "thanks";
     }
 
-    @RequestMapping("/run")
+    @RequestMapping("/run/*")
     public String getRunPage() {
         return "run";
     }

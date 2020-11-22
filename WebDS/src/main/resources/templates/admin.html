@@ -6,7 +6,18 @@
         <th:block th:include="fragments/common.html :: headerfiles"></th:block>
     </head>
     <body>
-
+        <style>
+            .online_status{
+                background-image: radial-gradient(rgb(126, 240, 97), rgb(102, 160, 104));
+            }
+            .offline_status{
+                background-image: radial-gradient(rgb(240, 77, 79), rgb(167, 103, 104));
+            }
+            .waiting_status{
+                background-image: radial-gradient(rgb(230, 216, 127), rgb(172, 161, 90));
+            }
+        </style>
+        <button class = "btn btn-primary" onclick= "toLoginPage();" style = "position: absolute; right: 5%; top:5%" >Switch Account</button>
         <div class="container-fluid">
             <div class="py-5 text-center">
                 <h2>Remote Operators Admin Console</h2>
@@ -29,14 +40,10 @@
                         </select>
                     </div>
                     <div class = "row mb-2">
-                       <button class = "btn btn-primary" onclick = "addUser('','');"> Add </button>
+                       <button class = "btn btn-primary" onclick = "addRemoteUser('','');"> Add </button>
                     </div>
-                    <table class = "row mb-3" style = "border:2px solid black;  width: 100%; border-collapse: collapse;">
-                        <tbody id = "usertable"><tr>
-                            <th class = "popup" style = "width: 70%;"> Users </th>
-                            <th class = "popup" style = "width: 15%;"> Role </th>
-                            <th class = "popup" style = "width: 15%;"> Status </th>
-                        </tr></tbody>
+                    <table class = "row mb-3" style = "border:2px solid black; border-collapse: collapse; table-layout: auto; margin:auto;">
+                        <tbody id = "usertable"></tbody>
                     </table>
                     <!--End beautifying-->
                 </div>
@@ -105,7 +112,7 @@
                         >
                             Invite Next
                         </button>-->
-                        <table style = "border:2px solid black;  width: 60%; border-collapse: collapse;">
+                        <table style = "border:2px solid black;  width: 80%; border-collapse: collapse;">
                             <tbody id = "invite_form" ><tr><th> Queue </th>
                             </tr></tbody>
                         </table>
@@ -178,7 +185,7 @@
                     </div>
                     <div class="row mb-3">
                         <div class="input-group">
-                            Recieve Driver Packets:&nbsp;
+                            Receive Driver Packets:&nbsp;
                             <div class="btn-group">
                                 <button
                                     type="button"
@@ -186,7 +193,7 @@
                                     class="btn btn-sm btn-outline-secondary"
                                     onclick="listenJoysticks()"
                                 >
-                                    Recieve
+                                    Receive
                                 </button>
                                 <button
                                     type="button"
@@ -253,6 +260,7 @@
                 dws.onopen = function () {
                     showBroadcastMessageD('<div class="alert alert-success">Connected to Driver Socket</div>');
                     dws.send('IAMADMIN');
+                    removeAllUsers();
                     dws.send('REQUESTUSER');
                 };
                 dws.onclose = function () {
@@ -275,7 +283,7 @@
                     } else if(msgSplit[0] == '#'){
                         // Adding user to User Status Log.
                         // msgSplit[1] = email,  msgSplit[2] = role
-                        addUser(msgSplit[1], msgSplit[2]);
+                        addOriginUser(msgSplit[1], msgSplit[2]);
                     } else if(msg == "USERERROR"){
                         window.alert("Error adding user: make sure all field is complete.");
                     } else {
@@ -344,6 +352,7 @@
                     }  else if(msgSplit[0] == '-'){
                         queueSize -= 1;
                         var email = msgSplit[1];
+                        removeUserFromQueue(email);
                         updateUser(email, "ONLINE");
                         drawQueue();
                     } else {
@@ -373,13 +382,6 @@
                 return '<div class="alert alert-info">' + msg + "</div>";
             }
 
-            var inviteList = document.getElementById("invite_form");
-            function inviteNext() {
-                var inviteForm = inviteList.parentNode;
-                if(inviteForm.style.visibility == "visible"){inviteForm.style.visibility = "hidden";}
-                else{ inviteForm.style.visibility = "visible";}
-            }
-
             function openQueue() {
                 if(ws != null) {
                     ws.send('OPENQ');
@@ -407,6 +409,7 @@
 
             window.onload = connectall();
 
+            var inviteList = document.getElementById("invite_form");
             function addUserToQueue(email, role){
                 var row = inviteList.insertRow();
                 var emailCell = row.insertCell();
@@ -415,37 +418,56 @@
                 var inviteButton = document.createElement("button");
                 inviteButton.innerHTML = "invite";
                 inviteButton.className = "btn btn-sm btn-outline-secondary";
+                inviteButton.id = "q" + email;
                 inviteButton.onclick = function()
                 {
                     ws.send("NEXT " + email);
-                    removeUserFromQueue(inviteButton);
                 };
                 emailCell.innerHTML = email;
                 inviteCell.appendChild(inviteButton);
             }
 
-            function removeUserFromQueue(buttonElement){
-                var row = buttonElement.parentNode.parentNode;
-                inviteList.removeChild(row);
+            function removeUserFromQueue(email){
+                var id = "q" + email;
+                var row = document.getElementById(id).parentNode.parentNode;
+                inviteList.removeChild(inviteList.childNodes[1]);
             }
 
-            function addUser(email, role){
+            function addRemoteUser(email, role){     
+                var emailInput = document.getElementById("adduser_email");
+                var roleInput = document.getElementById("adduser_role");
+                if(emailInput.value == ''){
+                    window.alert("Email empty!")
+                    return;
+                }
+                email = emailInput.value;
+                role = roleInput.value;
+                emailInput.innerHTML = "";
+
+                addOriginUser(email, role);
+
+                dws.send("@ " + email + " " + role);
+            }
+
+            function addOriginUser(email, role){
                 var table = document.getElementById("usertable");
                 var row = table.insertRow();
                 row.id = email;
                 var emailCell = row.insertCell();
                 var roleCell = row.insertCell();
                 var statusCell = row.insertCell();
-                
-                if(email == ""){
-                    email = document.getElementById("adduser_email").value;
-                    role = document.getElementById("adduser_role").value;
-                }
+
                 emailCell.innerHTML = email;
                 roleCell.innerHTML = role;
                 statusCell.innerHTML = "OFFLINE";
+                statusCell.className = "offline_status";
+            }
 
-                dws.send("@ " + email + " " + role);
+            function removeAllUsers(){
+                var table = document.getElementById("usertable");
+                var newBody = document.createElement("tbody");
+                newBody.id = "usertable";
+                table.parentNode.replaceChild(newBody, table);
             }
 
             function updateUser(email, status){
@@ -453,10 +475,18 @@
                 for(i = 0; i < table.childNodes.length; i ++){
                     if(table.childNodes[i].id == email){
                         var row = table.childNodes[i];
-                        row.childNodes[2].innerHTML = status;
+                        var statusCell = row.childNodes[2];
+                        statusCell.innerHTML = status;
+                        if(status == "OFFLINE"){statusCell.className = "offline_status";}
+                        else if(status == "WAITING"){statusCell.className = "waiting_status";}
+                        else{statusCell.className = "online_status";}
                         break;
                     }
                 }
+            }
+
+            function toLoginPage(){
+                window.location.href = "/login";
             }
         </script>
         

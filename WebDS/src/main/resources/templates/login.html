@@ -69,6 +69,10 @@
             
             function continueToPage(){
                 setUserData(sessionEmail, sessionName);
+                
+            }
+
+            function submitForm(){
                 setTimeout(() => {
                     document.getElementById("form_user").value = sessionEmail;
                     document.getElementById("form_pw").value = "password";      
@@ -80,11 +84,11 @@
                     {
                         type : "POST",
                         contentType : "application/json",
-                        url: "http://localhost:8080/redirect", // temporary URL
+                        url: "http://localhost:8080/redirect/info", // temporary URL
                         data: JSON.stringify({"name":name, "email":email}),
                         timeout : 100000,
                         success : function (data){
-                            window.alert("sucess! " + data);
+                            submitForm();
                         },
                         error: function(jqXHR, textStatus, errorThrown) {
                             window.alert(jqXHR.status + " status " + textStatus + " thrown " + errorThrown);

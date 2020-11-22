@@ -4,6 +4,9 @@ import lightning.webds.entity.User;
 import lightning.webds.service.UserService;
 
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ExecutionException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,19 +22,20 @@ public class UserInfo implements UserDetailsService{
     // called by Spring to get user info
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findUser(username);
-        if(user != null){
+        User user = new User("","", "");
+        try{
+            user = userService.getUserDetails(username);
+        } 
+        catch(InterruptedException in){}
+        catch(ExecutionException ex){}
+        
+        if(user.getEmail() != ""){
             return org.springframework.security.core.userdetails.User.builder()
             .username(username)
             .password("password")
             .roles(user.getRole())
             .build();
         }
-        throw new UsernameNotFoundException("User not found.");
-    }
-
-    // find user from UserService class
-    private User findUser(String email){
-        return userService.findUserByEmail(email);
+        throw new UsernameNotFoundException("User not found or Connection Failure");
     }
 }

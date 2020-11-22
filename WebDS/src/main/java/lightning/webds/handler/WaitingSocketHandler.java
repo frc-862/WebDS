@@ -45,7 +45,7 @@ public class WaitingSocketHandler extends TextWebSocketHandler {
             sessions.remove(session);
             //admin.sendMessage(new TextMessage("Admin Configured"));
         } else if(msgSplit[0].equals("ADD")) {
-            System.out.println(MainController.isQueueOpen());
+            System.out.println("queue open?" +MainController.isQueueOpen());
             if(admin != null && admin.isOpen() && MainController.isQueueOpen()) {
                 // send message to admin to add user to queue
                 admin.sendMessage(new TextMessage("+"));
