@@ -11,6 +11,11 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import lightning.webds.UserInfo;
+import lightning.webds.controller.MainController;
+import lightning.webds.entity.User;
+import lightning.webds.service.UserService;
+
 public class DriverSocketHandler extends TextWebSocketHandler {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(WaitingSocketHandler.class);
@@ -19,7 +24,7 @@ public class DriverSocketHandler extends TextWebSocketHandler {
 
     private WebSocketSession driver = null;
 
-    private WebSocketSession admin = null;
+    private static WebSocketSession admin = null;
 
     private WebSocketSession robot = null;
 
@@ -38,7 +43,7 @@ public class DriverSocketHandler extends TextWebSocketHandler {
         sessions.remove(session);
         super.afterConnectionClosed(session, status);
     }
- 
+
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         super.handleTextMessage(session, message);
@@ -101,7 +106,25 @@ public class DriverSocketHandler extends TextWebSocketHandler {
             if(driver != null && driver.isOpen()) {
                 driver.sendMessage(new TextMessage("LEAVE"));
             }
-        } else {                                                          //                                          } 
+        } else if(msg.equals("REQUESTUSER")){
+            var userMap = UserInfo.userService.getAllUser();
+            for(var user : userMap){
+                admin.sendMessage(new TextMessage("# " + user.getEmail() + " " + user.getRole()));
+            }
+            sendMessageToAdmin(MainController.getAdminEmail(), "ADMIN", "ONLINE");
+        }else if(msg.split(" ")[0].equals("REMOVEUSER")){
+            var msgSplit = msg.split(" ");
+            sendMessageToAdmin(msgSplit[1], "@",  "OFFLINE");
+        } else if(msg.startsWith("@")){ // Add user to server database
+            var info = msg.split(" ");
+            // TODO: temporary: need to add to realtime database
+            if(info.length > 2){
+                UserInfo.userService.updateUser(new User("", info[1], info[2]));
+            }
+            else{
+                admin.sendMessage(new TextMessage("USERERROR"));
+            }
+        } else {
             sessions.forEach(webSocketSession -> {
                 try {
                     webSocketSession.sendMessage(message);
@@ -112,4 +135,9 @@ public class DriverSocketHandler extends TextWebSocketHandler {
         } // COMMENT OUT FOR DEBUG
     }
 
+    public static void sendMessageToAdmin(String email, String role, String status) throws Exception{
+        if(admin != null && admin.isOpen()){ // update user status
+            admin.sendMessage(new TextMessage("@ " + email + " " + role + " " + status));
+        }
+    }
 }

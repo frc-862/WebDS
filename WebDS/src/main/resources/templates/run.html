@@ -50,6 +50,7 @@
         </style>
     </head>
     <body>
+        <button class = "btn btn-primary" onclick= "toLoginPage();" style = "position: absolute; right: 5%; top:5%" >Switch Account</button>
         <div class="container">
             <div class="py-5 text-center">
                 <img
@@ -85,6 +86,21 @@
                     <div id="console"></div>
                 </div>
             </div>
+            <!--
+            <div id="twitch-embed"></div>
+
+             Load the Twitch embed script 
+            <script src="https://player.twitch.tv/js/embed/v1.js"></script>
+
+             Create a Twitch.Player object. This will render within the placeholder div S
+            <script type="text/javascript">
+                new Twitch.Embed("twitch-embed", {
+                    height: "100%", // Why does this not work???
+                    width: "100%",
+                    channel: "ggghosty05x" // Nicks Twitch
+                });
+            </script>-->
+            </div>
         </div>
 
         <script>
@@ -104,6 +120,7 @@
                     configKeyboard();
                 };
                 ws.onclose = function () {
+                    ws.send("REMOVEUSER");
                     disconnect();
                     //window.location.href = "/error";
                 };
@@ -134,6 +151,11 @@
             }
 
             window.onload = connect();
+            window.onunload = function()
+            {
+                var email = document.location.pathname.replace("/run/", '');
+                ws.send("REMOVEUSER " + email);
+            }
 
             var kRAF = window.mozRequestAnimationFrame ||
               window.webkitRequestAnimationFrame ||
@@ -194,7 +216,7 @@
             function sendUserInput(left, right) {
                 if(ws != null) {
                     var cmd = "CMD:L:" + left + ":R:" + right + ":CMD";
-                    ws.send(cmd);
+                    //ws.send(cmd);
                 }
             }
 
@@ -396,6 +418,10 @@
                 window.addEventListener("webkitgamepaddisconnected", disconnecthandler);
             } else {
                 setInterval(scangamepads, 500);
+            }
+
+            function toLoginPage(){
+                window.location.href = "/login";
             }
 
         </script>
