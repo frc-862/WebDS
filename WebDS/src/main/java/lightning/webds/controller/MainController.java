@@ -52,7 +52,6 @@ public class MainController {
     public String getAdminPage(@PathVariable String email){
         if(UserInfo.userService.userExist(email)){
             // allow only 1 admin
-            System.out.println("email " + email + "id " + adminID);
             if(!adminExists || adminID.equals(email)){
                 adminExists = true;
                 adminID = email;

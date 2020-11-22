@@ -18,7 +18,6 @@ public class FireBaseInitializer{
 
     @PostConstruct
 public void initialize() {
-    System.out.println("firebaseapp initialized");
     try {
         FileInputStream serviceAccount =
                 new FileInputStream("./serviceAccount.json");
