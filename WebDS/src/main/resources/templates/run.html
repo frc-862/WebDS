@@ -216,7 +216,7 @@
             function sendUserInput(left, right) {
                 if(ws != null) {
                     var cmd = "CMD:L:" + left + ":R:" + right + ":CMD";
-                    //ws.send(cmd);
+                    ws.send(cmd);
                 }
             }
 
