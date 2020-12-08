@@ -8,6 +8,8 @@ public class User {
 
     private String role;
 
+    private String googleIdToken = "";
+
     public User() {}
 
     public User(String name, String email, String role) {
@@ -34,5 +36,9 @@ public class User {
 
     public String getRole(){
         return role;
+    }
+
+    public String getGoogleIdToken(){
+        return googleIdToken;
     }
 }

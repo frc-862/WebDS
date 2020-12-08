@@ -45,20 +45,23 @@
         <script>
             var sessionEmail = "Not Signed In";
             var sessionName = "Not Signed In";
+            var googleIdToken = "";
             var continueButton = document.getElementById("continue");
 
             function onSignIn(googleUser) {
                 var profile = googleUser.getBasicProfile();
                 sessionEmail = profile.getEmail();
                 sessionName = profile.getName();
-                // The ID token you need to pass to your backend:
-                var id_token = googleUser.getAuthResponse().id_token; 
+                googleIdToken = googleUser.getAuthResponse().id_token;
 
                 continueButton.disabled = false;   
                 continueButton.innerHTML = "Continue as " + sessionEmail;
             }
 
             function signOut() {
+                sessionEmail = "";
+                sessionName = "";
+                googleIdToken = "";
                 var auth2 = gapi.auth2.getAuthInstance();
                 auth2.signOut().then(function () {
                 window.alert('User signed out.');
@@ -68,8 +71,7 @@
             }
             
             function continueToPage(){
-                setUserData(sessionEmail, sessionName);
-                
+                setUserData(sessionEmail, sessionName, googleIdToken);      
             }
 
             function submitForm(){
@@ -79,13 +81,13 @@
                 document.getElementById("form_submit").submit();}, 500 ); 
             }
 
-            function setUserData(email, name){
+            function setUserData(email, name, googleId){
                 $.ajax(
                     {
                         type : "POST",
                         contentType : "application/json",
                         url: "http://localhost:8080/redirect/info", // temporary URL
-                        data: JSON.stringify({"name":name, "email":email}),
+                        data: JSON.stringify({"name":name, "email":email, "googleIdToken":googleId}),
                         timeout : 100000,
                         success : function (data){
                             submitForm();

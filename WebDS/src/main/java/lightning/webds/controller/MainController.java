@@ -1,5 +1,10 @@
 package lightning.webds.controller;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+
 import lightning.webds.UserInfo;
 import lightning.webds.config.HttpSecurityConfig;
 import lightning.webds.entity.User;
@@ -7,8 +12,11 @@ import lightning.webds.handler.DriverSocketHandler;
 import lightning.webds.service.UserService;
 
 import java.util.Map;
+import java.io.IOException;
 import java.lang.Object;
 import java.lang.invoke.ConstantBootstraps;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import java.util.HashMap;
 
@@ -29,6 +37,7 @@ public class MainController {
     private static String adminID = null;
 
     private User userDetails;
+    private boolean idValid;
 
     @RequestMapping("/")
     public String getMainPage(){
@@ -79,10 +88,10 @@ public class MainController {
         var email = userDetails.getEmail();
 
         // redirect user based on role
+        if(!idValid){return "redirect:/login/?error";}
         if(role.equals(HttpSecurityConfig.admin_role)){ return "redirect:/admin/" + email;}
         else if(qOpen){
          return "redirect:/user/" + email;}
-        
         return "redirect:/user/" + email;
     }
 
@@ -90,6 +99,7 @@ public class MainController {
     public String getRedirectJSON(@RequestBody User user){
         try{
         userDetails = UserInfo.userService.getUserDetails(user.getEmail());
+        idValid = verifyUser(user.getGoogleIdToken());
         }
         catch(InterruptedException in){}
         catch(ExecutionException ex){}
@@ -107,6 +117,21 @@ public class MainController {
         return "thanks";
     }
 
+    private boolean verifyUser(String idToken){
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
+        .setAudience(Collections.singletonList("365631867288-m7q9boog1vgsp7dbalv2uil95cjm0j25.apps.googleusercontent.com"))  
+        .build();
+
+        GoogleIdToken token = null;
+        try{
+            token = verifier.verify(idToken);
+        }
+        catch(GeneralSecurityException e){}
+        catch(IOException e){}
+
+        return token != null;
+    }
+    
     public static void openQueue() {
         qOpen = true;
     }

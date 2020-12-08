@@ -9,6 +9,7 @@ import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.FieldPath;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.cloud.FirestoreClient;
@@ -78,14 +79,11 @@ public class UserService {
         .document(user.getEmail()) // get instance of the document under the "users" collection
         .set(user); // set content to the document
 
+        FieldPath email = FieldPath.of(user.getEmail());
         dbFirestore
         .collection(COLLECTION_NAME)
         .document("userlist")
-        .update(new HashMap<String,Object>()
-        {
-            {put(user.getEmail(), "");}
-        }
-        );
+        .update(email, "");
     }
 
     public void deleteUser(String email) {
