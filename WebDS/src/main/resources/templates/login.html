@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<meta name="google-signin-client_id" content="365631867288-m7q9boog1vgsp7dbalv2uil95cjm0j25.apps.googleusercontent.com">
+<meta name="google-signin-client_id" content="944844203992-8ecnufkoai6iialvgegi3qflk9m8cihf.apps.googleusercontent.com">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
       <link rel="icon" type="image/png" href="images/icon.png" />
@@ -53,7 +53,6 @@
                 sessionEmail = profile.getEmail();
                 sessionName = profile.getName();
                 googleIdToken = googleUser.getAuthResponse().id_token;
-
                 continueButton.disabled = false;   
                 continueButton.innerHTML = "Continue as " + sessionEmail;
             }

@@ -103,6 +103,7 @@ public class MainController {
         }
         catch(InterruptedException in){}
         catch(ExecutionException ex){}
+        System.out.println(userDetails.getEmail() + userDetails.getName() + user.getGoogleIdToken());
        return "thanks";
     }
 
@@ -119,7 +120,7 @@ public class MainController {
 
     private boolean verifyUser(String idToken){
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
-        .setAudience(Collections.singletonList("365631867288-m7q9boog1vgsp7dbalv2uil95cjm0j25.apps.googleusercontent.com"))  
+        .setAudience(Collections.singletonList("944844203992-8ecnufkoai6iialvgegi3qflk9m8cihf.apps.googleusercontent.com"))  
         .build();
 
         GoogleIdToken token = null;
