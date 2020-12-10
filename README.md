@@ -99,7 +99,7 @@ nmake
 Make Run Script (from application directory):
 
 ```bash
-cqtdeployer -bin LightningDS.exe -qmake C:/Qt/<version>/min_gw/bin/qmake.exe
+cqtdeployer -bin LightningDS.exe -qmake C:/Qt/<qt-version>/min_gw/bin/qmake.exe
 ```
 
 ##### Build Script
