@@ -253,7 +253,7 @@
 
             var dws;
             function connectDS() {
-                var url = "23.28.76.16.xip.io:862/ds";
+                var url = "ws://23.28.76.16.xip.io:862/ds";
                     /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/ds}]]*/ //"ws://localhost:8080/ds";
                 /*]]>*/
                 dws = new WebSocket(url);
@@ -331,7 +331,7 @@
 
             var ws;
             function connect() {
-                var url = "23.28.76.16.xip.io:862/wait";
+                var url = "ws://23.28.76.16.xip.io:862/wait";
                     /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/wait}]]*/ //"ws://localhost:8080/wait";
                 /*]]>*/
                 ws = new WebSocket(url);
