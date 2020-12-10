@@ -108,8 +108,8 @@
 
             var ws;
             function connect() {
-                var url =
-                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/ds}]]*/ "ws://localhost:8080/ds";
+                var url = "23.28.76.16.xip.io:862/ds";
+                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/ds}]]*/ //"ws://localhost:8080/ds";
                 /*]]>*/
                 ws = new WebSocket(url);
                 ws.onopen = function () {

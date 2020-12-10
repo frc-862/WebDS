@@ -253,8 +253,8 @@
 
             var dws;
             function connectDS() {
-                var url =
-                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/ds}]]*/ "ws://localhost:8080/ds";
+                var url = "23.28.76.16.xip.io:862/ds";
+                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/ds}]]*/ //"ws://localhost:8080/ds";
                 /*]]>*/
                 dws = new WebSocket(url);
                 dws.onopen = function () {
@@ -331,8 +331,8 @@
 
             var ws;
             function connect() {
-                var url =
-                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/wait}]]*/ "ws://localhost:8080/wait";
+                var url = "23.28.76.16.xip.io:862/wait";
+                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/wait}]]*/ //"ws://localhost:8080/wait";
                 /*]]>*/
                 ws = new WebSocket(url);
                 ws.onopen = function () {

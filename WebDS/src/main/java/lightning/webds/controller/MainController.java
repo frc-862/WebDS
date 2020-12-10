@@ -103,7 +103,8 @@ public class MainController {
         }
         catch(InterruptedException in){}
         catch(ExecutionException ex){}
-        System.out.println(userDetails.getEmail() + userDetails.getName() + user.getGoogleIdToken());
+        //System.out.println(userDetails.getEmail() + userDetails.getName() + user.getGoogleIdToken());
+        System.out.println(userDetails.getEmail() + user.getGoogleIdToken());
        return "thanks";
     }
 

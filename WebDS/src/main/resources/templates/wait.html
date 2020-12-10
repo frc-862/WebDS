@@ -34,8 +34,8 @@
         <script>
             var ws;
             function connect() {
-                var url =
-                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/wait}]]*/ "ws://localhost:8080/wait";
+                var url = "23.28.76.16.xip.io:862/wait";
+                    /*[['ws://'+${#httpServletRequest.serverName}+':'+${#httpServletRequest.serverPort}+@{/wait}]]*/ //"ws://localhost:8080/wait";
                 /*]]>*/
                 ws = new WebSocket(url);
                 var email = window.location.pathname.replace('/user/', '');
