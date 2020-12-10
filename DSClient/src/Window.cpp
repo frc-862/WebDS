@@ -30,7 +30,8 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
     ds = DriverStation::getInstance();
 
     /* Create Socket Instance */
-    sh = new SocketHandler(QUrl(QStringLiteral("ws://localhost:8080/ds")));
+    // sh = new SocketHandler(QUrl(QStringLiteral("ws://localhost:8080/ds")));
+    sh = new SocketHandler(QUrl(QStringLiteral("ws://23.28.76.16.xip.io:862/ds")));
 
     /* Fill UI options */
     ui->Protocols->addItems (ds->protocols());

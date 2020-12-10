@@ -40,6 +40,8 @@ FRC Driver Station client able to interface with robots and remote input via Web
 
 ### Building DSClient
 
+Built with Qt 5.
+
 Build with [CQtDeployer](https://github.com/QuasarApp/CQtDeployer).
 
 Useful documentation [here](https://github.com/QuasarApp/CQtDeployer/wiki/quickguide).
@@ -89,7 +91,7 @@ Install CQtDeployer [here](https://github.com/QuasarApp/CQtDeployer/releases/dow
 Build Qt Application Binaries (from application directory):
 
 ```bash
-nmake clean
+nmake -clean
 qmake -config release
 nmake
 ```
@@ -97,7 +99,7 @@ nmake
 Make Run Script (from application directory):
 
 ```bash
-cqtdeployer -bin LightningDS.exe -qmake C:/Qt/<version>/min_gw/bin/qmake.exe
+cqtdeployer -bin LightningDS.exe -qmake C:/Qt/<qt-version>/min_gw/bin/qmake.exe
 ```
 
 ##### Build Script
