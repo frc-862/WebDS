@@ -89,7 +89,7 @@ Install CQtDeployer [here](https://github.com/QuasarApp/CQtDeployer/releases/dow
 Build Qt Application Binaries (from application directory):
 
 ```bash
-nmake clean
+nmake -clean
 qmake -config release
 nmake
 ```
