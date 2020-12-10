@@ -40,6 +40,8 @@ FRC Driver Station client able to interface with robots and remote input via Web
 
 ### Building DSClient
 
+Build with Qt 5.
+
 Build with [CQtDeployer](https://github.com/QuasarApp/CQtDeployer).
 
 Useful documentation [here](https://github.com/QuasarApp/CQtDeployer/wiki/quickguide).
