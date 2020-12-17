@@ -247,3 +247,4 @@ gradle-app.setting
 **/DistributionKit/
 LightningDS/.qmake.stash
 LightningDS/LightningDS
+serviceAccount.json
