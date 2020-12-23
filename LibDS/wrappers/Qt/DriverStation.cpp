@@ -31,6 +31,9 @@
 #include <QHostAddress>
 #include <QApplication>
 
+#include <regex>
+#include <string>
+
 #define LOG qDebug() << "DS Client:"
 
 /**
@@ -950,9 +953,24 @@ void DriverStation::setCustomRadioAddress (const QString& address)
  */
 void DriverStation::setCustomRobotAddress (const QString& address)
 {
-    LOG << "Using new robot address" << getAddress (address);
-    DS_SetCustomRobotAddress (getAddress (address).toStdString().c_str());
-    emit robotAddressChanged();
+    try {
+        LOG << "Using new robot address" << getAddress (address);
+        if( getAddress(address) ==  NULL ) {
+            qDebug() << "Null Address";
+        } else {
+            std::regex addy_expr("^(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
+            if (regex_match (address.toStdString(), addy_expr )) {
+                DS_SetCustomRobotAddress (getAddress (address).toStdString().c_str());
+                emit robotAddressChanged();
+            } else {
+                qDebug() << address << " is not a valid address";
+            }
+        }
+    } catch (const std::exception &e) {
+        qDebug() << "Problem setting custom Robot address " << e.what();
+    } catch (...) {
+        qDebug() << "Problem setting custom Robot address ";
+    }
 }
 
 /**

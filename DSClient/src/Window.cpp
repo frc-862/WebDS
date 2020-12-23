@@ -2,6 +2,8 @@
 
 #include <QMessageBox>
 #include <DriverStation.h>
+#include <QRegExp>
+#include <QValidator>
 
 /**
  * Initializes the window and its widgets.
@@ -10,12 +12,15 @@
  */
 Window::Window (QWidget* parent) : QMainWindow (parent)
 {
+    try {
+
+
     ui = new Ui::Window;
     ui->setupUi (this);
 
     /* Set window geometry */
-    move (100, 100);
-    setFixedSize (minimumSizeHint());
+    //move (100, 100);
+    //setFixedSize (minimumSizeHint());
 
     /* Set window title to {OS} Driver Station */
 #if defined (Q_OS_LINUX)
@@ -91,6 +96,10 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
 
     /* Initialize the DS with the 2020 protocol */
     ds->setProtocol (DriverStation::Protocol2020);
+
+    } catch (...) {
+        qDebug() << "Oh No!!!";
+    }
 }
 
 /**
@@ -98,7 +107,6 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
  */
 Window::~Window()
 {
-    //DriverStation::getInstance()->quitDS();
     delete ui;
 }
 
