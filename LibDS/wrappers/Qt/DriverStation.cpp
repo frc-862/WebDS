@@ -578,6 +578,7 @@ QStringList DriverStation::protocols() const
 {
     QStringList list;
 
+    list.append (tr ("FRC 2021"));
     list.append (tr ("FRC 2020"));
     list.append (tr ("FRC 2018"));
     list.append (tr ("FRC 2016"));
@@ -823,6 +824,10 @@ void DriverStation::setProtocol (const Protocol protocol)
     case Protocol2020:
         loadProtocol (DS_GetProtocolFRC_2020());
         LOG << "Switched to FRC 2020 Protocol";
+        break;
+    case Protocol2021:
+        loadProtocol (DS_GetProtocolFRC_2021());
+        LOG << "Switched to FRC 2021 Protocol";
         break;
     default:
         break;

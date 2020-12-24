@@ -19,8 +19,8 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
     ui->setupUi (this);
 
     /* Set window geometry */
-    //move (100, 100);
-    //setFixedSize (minimumSizeHint());
+    move (100, 100);
+    setFixedSize (minimumSizeHint());
 
     /* Set window title to {OS} Driver Station */
 #if defined (Q_OS_LINUX)
@@ -95,7 +95,7 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
             sh,                SLOT   (connectTo (QString)));
 
     /* Initialize the DS with the 2020 protocol */
-    ds->setProtocol (DriverStation::Protocol2020);
+    ds->setProtocol (DriverStation::Protocol2021);
 
     } catch (...) {
         qDebug() << "Oh No!!!";
