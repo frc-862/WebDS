@@ -52,7 +52,8 @@ SOURCES += \
     $$PWD/src/timer.c \
     $$PWD/src/queue.c \
     $$PWD/src/string.c \
-    $$PWD/src/protocols/frc_2020.c
+    $$PWD/src/protocols/frc_2020.c \
+    $$PWD/src/protocols/frc_2021.c
     
 include ($$PWD/lib/Socky/Socky.pri)
 

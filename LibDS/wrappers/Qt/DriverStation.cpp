@@ -31,6 +31,9 @@
 #include <QHostAddress>
 #include <QApplication>
 
+#include <regex>
+#include <string>
+
 #define LOG qDebug() << "DS Client:"
 
 /**
@@ -575,6 +578,7 @@ QStringList DriverStation::protocols() const
 {
     QStringList list;
 
+    list.append (tr ("FRC 2021"));
     list.append (tr ("FRC 2020"));
     list.append (tr ("FRC 2018"));
     list.append (tr ("FRC 2016"));
@@ -821,6 +825,10 @@ void DriverStation::setProtocol (const Protocol protocol)
         loadProtocol (DS_GetProtocolFRC_2020());
         LOG << "Switched to FRC 2020 Protocol";
         break;
+    case Protocol2021:
+        loadProtocol (DS_GetProtocolFRC_2021());
+        LOG << "Switched to FRC 2021 Protocol";
+        break;
     default:
         break;
     }
@@ -950,9 +958,24 @@ void DriverStation::setCustomRadioAddress (const QString& address)
  */
 void DriverStation::setCustomRobotAddress (const QString& address)
 {
-    LOG << "Using new robot address" << getAddress (address);
-    DS_SetCustomRobotAddress (getAddress (address).toStdString().c_str());
-    emit robotAddressChanged();
+    try {
+        LOG << "Using new robot address" << getAddress (address);
+        if( getAddress(address) ==  NULL ) {
+            qDebug() << "Null Address";
+        } else {
+            std::regex addy_expr("^(([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[0-9]{2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])$");
+            if (regex_match (address.toStdString(), addy_expr )) {
+                DS_SetCustomRobotAddress (getAddress (address).toStdString().c_str());
+                emit robotAddressChanged();
+            } else {
+                qDebug() << address << " is not a valid address";
+            }
+        }
+    } catch (const std::exception &e) {
+        qDebug() << "Problem setting custom Robot address " << e.what();
+    } catch (...) {
+        qDebug() << "Problem setting custom Robot address ";
+    }
 }
 
 /**

@@ -2,6 +2,8 @@
 
 #include <QMessageBox>
 #include <DriverStation.h>
+#include <QRegExp>
+#include <QValidator>
 
 /**
  * Initializes the window and its widgets.
@@ -10,6 +12,9 @@
  */
 Window::Window (QWidget* parent) : QMainWindow (parent)
 {
+    try {
+
+
     ui = new Ui::Window;
     ui->setupUi (this);
 
@@ -90,7 +95,11 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
             sh,                SLOT   (connectTo (QString)));
 
     /* Initialize the DS with the 2020 protocol */
-    ds->setProtocol (DriverStation::Protocol2020);
+    ds->setProtocol (DriverStation::Protocol2021);
+
+    } catch (...) {
+        qDebug() << "Oh No!!!";
+    }
 }
 
 /**
@@ -98,7 +107,6 @@ Window::Window (QWidget* parent) : QMainWindow (parent)
  */
 Window::~Window()
 {
-    //DriverStation::getInstance()->quitDS();
     delete ui;
 }
 

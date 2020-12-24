@@ -35,6 +35,7 @@ extern DS_Protocol DS_GetProtocolFRC_2015 (void);
 extern DS_Protocol DS_GetProtocolFRC_2016 (void);
 extern DS_Protocol DS_GetProtocolFRC_2018 (void);
 extern DS_Protocol DS_GetProtocolFRC_2020 (void);
+extern DS_Protocol DS_GetProtocolFRC_2021 (void);
 
 #ifdef __cplusplus
 }
